@@ -3,8 +3,8 @@ import type { Route } from '~router/app/+types/root';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'New React Router App' },
-    { name: 'description', content: 'Welcome to React Router!' },
+    { title: 'Duel App' },
+    { name: 'description', content: 'Welcome to Duel App!' },
   ];
 }
 

@@ -109,11 +109,13 @@ services:
       target: client-dev
     develop:
       watch:
-        - path: ./client/src
+        - path: ./client/app
           action: sync
-          target: /usr/local/app/src
+          target: /usr/local/app/app
         - path: ./client/package.json
           action: rebuild
+#        - path: ./client/*.config.ts
+#          action: rebuild
     labels:
       traefik.http.routers.client.rule: Host(`localhost`)
       traefik.http.services.client.loadbalancer.server.port: 5173
