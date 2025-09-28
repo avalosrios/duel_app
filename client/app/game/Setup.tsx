@@ -85,6 +85,8 @@ const SETUP_STEPS: {
   ],
 };
 
+// TODO: Add a draft page that does the drafting and shows the cards in the deck
+
 export default function Setup() {
   return (
     <div className='container mx-auto px-4 py-8'>

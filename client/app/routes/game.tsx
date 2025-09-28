@@ -1,5 +1,7 @@
 import type { Route } from '~router/app/+types/root';
 import { Outlet } from 'react-router';
+import GameContextProvider from '~/game/state/GameContextProvider';
+import BoardContextProvider from '~/game/state/BoardContextProvider';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,10 +12,14 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Game() {
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <h1>Duel Game</h1>
-      {/* Outlet will render the child route */}
-      <Outlet />
-    </div>
+    <GameContextProvider>
+      <BoardContextProvider>
+        <div className='container mx-auto px-4 py-8'>
+          <h1>Duel Game</h1>
+          {/* Outlet will render the child route */}
+          <Outlet />
+        </div>
+      </BoardContextProvider>
+    </GameContextProvider>
   );
 }
