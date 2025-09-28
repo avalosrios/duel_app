@@ -1,17 +1,17 @@
 import React, { createContext } from 'react';
 
-interface MilitaryToken {
+export interface MilitaryToken {
   coinPenalty: number;
   position: 1 | 2;
   isSet: boolean; // Indicates that the token is set on the board
 }
 
-interface ProgressToken {
+export interface ProgressToken {
   isSet: boolean; // Indicates that the token is set on the board
   // TODO: There may be more properties here
 }
 
-interface BoardMilitaryContextState {
+export interface BoardMilitaryContextState {
   conflictPawnPosition: { x: number }; // Conflict pawn moves right or left
   militaryTokens: {
     start: MilitaryToken[]; // Military tokens at the start of the board
@@ -23,7 +23,7 @@ interface BoardMilitaryContextState {
 // It is divided into zones (9) and spaces (19). The last space on each end
 // represents the players capital.
 // It also holds the Military tokens and the progress tokens for the game
-interface BoardContextState {
+export interface BoardContextState {
   militaryContext: BoardMilitaryContextState;
   progressTokens: ProgressToken[];
 }

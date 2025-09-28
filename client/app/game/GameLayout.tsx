@@ -7,7 +7,6 @@ export default function GameLayout(): React.ReactNode {
   return (
     <GameContextProvider>
       <BoardContextProvider>
-        Game Layout
         <Outlet />
       </BoardContextProvider>
     </GameContextProvider>

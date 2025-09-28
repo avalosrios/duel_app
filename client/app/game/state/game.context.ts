@@ -4,7 +4,7 @@ interface Player {
   name?: string;
 }
 
-interface GameState {
+export interface GameState {
   players: Player[]; // Max 2
   currentPlayer?: Player | null;
 }
