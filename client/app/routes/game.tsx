@@ -1,25 +1,20 @@
-import type { Route } from '~router/app/+types/root';
 import { Outlet } from 'react-router';
-import GameContextProvider from '~/game/state/GameContextProvider';
-import BoardContextProvider from '~/game/state/BoardContextProvider';
+import React from 'react';
 
-export function meta({}: Route.MetaArgs) {
+// {}: Route.MetaArgs
+export function meta() {
   return [
     { title: 'Duel App Game' },
     { name: 'description', content: 'Actual game of Duel App!' },
   ];
 }
 
-export default function Game() {
+export default function Game(): React.ReactNode {
   return (
-    <GameContextProvider>
-      <BoardContextProvider>
-        <div className='container mx-auto px-4 py-8'>
-          <h1>Duel Game</h1>
-          {/* Outlet will render the child route */}
-          <Outlet />
-        </div>
-      </BoardContextProvider>
-    </GameContextProvider>
+    <div className='container mx-auto px-4 py-8'>
+      <h1>Duel Game</h1>
+      {/* Outlet will render the child route */}
+      <Outlet />
+    </div>
   );
 }

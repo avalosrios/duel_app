@@ -1,6 +1,8 @@
 import React, { createContext } from 'react';
 
-interface Player {}
+interface Player {
+  name?: string;
+}
 
 interface GameState {
   players: Player[]; // Max 2
