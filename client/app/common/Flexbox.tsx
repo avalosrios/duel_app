@@ -50,21 +50,22 @@ function getClassName(
   extraClassName?: string
 ): string {
   const { direction, gap, justify, alignItems, wrap } = props;
-  let baseClassName = 'flex';
+  const styles = ['flex'];
   if (direction) {
-    baseClassName += getDirection(direction);
+    styles.push(getDirection(direction));
   }
   if (gap) {
-    baseClassName += ` gap-${gap}`;
+    styles.push(`gap-${gap}`);
   }
   if (justify) {
-    baseClassName += ` justify-${justify}`;
+    styles.push(`justify-${justify}`);
   }
   if (alignItems) {
-    baseClassName += ` items-${alignItems}`;
+    styles.push(`items-${alignItems}`);
   }
   if (wrap) {
-    baseClassName += ` flex-${wrap}`;
+    styles.push(`flex-${wrap}`);
   }
+  const baseClassName = styles.join(' ');
   return [baseClassName, extraClassName].filter(val => val != null).join(' ');
 }

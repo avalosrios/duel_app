@@ -8,6 +8,7 @@ export interface MilitaryToken {
 
 export interface ProgressToken {
   isSet: boolean; // Indicates that the token is set on the board
+  name?: string;
   // TODO: There may be more properties here
 }
 
