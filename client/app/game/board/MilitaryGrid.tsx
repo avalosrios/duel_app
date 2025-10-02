@@ -1,37 +1,76 @@
 import React from 'react';
 
+interface BoardSpace {
+  name: string;
+  description: string;
+  colSize: number;
+}
+
+interface BoardSquare {
+  spaces: BoardSpace[];
+  id: string;
+}
+
+const EMPTY_BOARD_SPACE: BoardSpace = {
+  name: '',
+  description: '',
+  colSize: 1,
+};
+
 export default function MilitaryGrid(): React.ReactNode {
+  // 2 rows
+  // Upper row with 19 columns
+  // Lower row with 9 columns
+  /**
+   * The board should look like this:
+   * Where C is the capital city and the middle is a single space.
+   * VP = Victory Points (value)
+   *
+   * | C | Zone 1 (3 spaces) | Zone 2 (3 spaces) | Zone 3 (2 spaces) | Middle | Zone 4 (2 spaces) | Zone 5 (3 spaces) | Zone 6 (3 spaces) | C |
+   * | X | TOKEN / VP        | TOKEN / VP       | TOKEN / VP         | SPACE  | TOKEN / VP       | TOKEN / VP       | TOKEN / VP       | X |
+   *
+   */
+  const bottomRowSizes = [1, 3, 3, 2, 1, 2, 3, 3, 1];
+  const linearBoard: BoardSquare[] = bottomRowSizes.map(item => {
+    const spaces: BoardSpace[] = Array(item)
+      .fill(EMPTY_BOARD_SPACE)
+      .map((space: BoardSpace, idx: number) => {
+        return {
+          name: `N-${item + 1}`,
+          description: `Space ${idx + 1}`,
+          colSize: 1,
+        };
+      });
+    return {
+      spaces,
+      id: `Square ${item}`,
+    };
+  });
   return (
-    <div className='grid grid-flow-row-dense grid-rows-3 grid-cols-9 gap-4'>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
+    <div className='container flex flex-row w-full'>
+      {linearBoard.map((square, idx) => (
+        <BoardSquare key={idx} square={square} />
+      ))}
+    </div>
+  );
+}
 
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
+interface BoardSquareProps {
+  square: BoardSquare;
+}
 
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
+function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
+  // this should be a square with 2 rows
+  return (
+    <div className='flex flex-col gap-8 border-2 grow-2'>
+      <div className='flex flex-row gap-2 self-center'>
+        {square.spaces.map((space, idx) => (
+          <div key={idx} className='flex flex-col self-center border-1'>
+            {space.name}
+          </div>
+        ))}
+      </div>
+      <div className='flex flex-row self-center'>{square.id}</div>
     </div>
   );
 }

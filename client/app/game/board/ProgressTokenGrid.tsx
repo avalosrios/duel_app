@@ -29,7 +29,7 @@ export default function ProgressTokenGrid(): React.ReactNode {
 type ProgressTokenProps = {
   token: ProgressToken;
 };
-function ProgressToken({ token }: ProgressTokenProps) {
+function ProgressToken({ token }: ProgressTokenProps): React.ReactNode {
   return (
     <Flexbox className={stylePadding.horiz(4)}>
       {token.isSet ? token?.name : 'Empty'}
