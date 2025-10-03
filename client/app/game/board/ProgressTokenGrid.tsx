@@ -18,7 +18,7 @@ export default function ProgressTokenGrid(): React.ReactNode {
   );
   // draw the progress token count as it is default on the board
   return (
-    <div className='grid grid-cols-5'>
+    <div className='flex gap-2 bg-emerald-700'>
       {boardSpaces.map((token: ProgressToken, idx: number) => (
         <ProgressToken key={idx} token={token} />
       ))}
@@ -31,7 +31,14 @@ type ProgressTokenProps = {
 };
 function ProgressToken({ token }: ProgressTokenProps): React.ReactNode {
   return (
-    <Flexbox className={stylePadding.horiz(4)}>
+    <Flexbox
+      className={[
+        stylePadding.horiz(4),
+        'bg-emerald-500',
+        'border-emerald-200',
+        'rounded-full',
+      ].join(' ')}
+    >
       {token.isSet ? token?.name : 'Empty'}
     </Flexbox>
   );

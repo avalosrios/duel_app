@@ -47,7 +47,7 @@ export default function MilitaryGrid(): React.ReactNode {
     };
   });
   return (
-    <div className='container flex flex-row w-full'>
+    <div className='container flex flex-row w-full justify-center'>
       {linearBoard.map((square, idx) => (
         <BoardSquare key={idx} square={square} />
       ))}
@@ -62,10 +62,13 @@ interface BoardSquareProps {
 function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
   // this should be a square with 2 rows
   return (
-    <div className='flex flex-col gap-8 border-2 grow-2'>
+    <div className='flex flex-col gap-8 border-2 bg-amber-600'>
       <div className='flex flex-row gap-2 self-center'>
         {square.spaces.map((space, idx) => (
-          <div key={idx} className='flex flex-col self-center border-1'>
+          <div
+            key={idx}
+            className='flex flex-col self-center border-1 rounded-full'
+          >
             {space.name}
           </div>
         ))}
