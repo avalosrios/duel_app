@@ -15,6 +15,7 @@ type SetupAction =
 export interface ISetupStep {
   name: string;
   description: string;
+  next?: string; // Name of the next step
   action?: SetupAction; // This should be a dispatcheable action
   substeps?: ISetupStep[];
 }
