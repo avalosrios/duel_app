@@ -1,4 +1,5 @@
 import type { Route } from '~router/app/+types/root';
+import Flexbox from '~/common/Flexbox';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -90,14 +91,14 @@ const SETUP_STEPS: {
 export default function Setup() {
   return (
     <div className='container mx-auto px-4 py-8'>
-      <div>
+      <Flexbox>
         <h1 className='text-2xl font-bold mb-4'>Setup</h1>
-      </div>
-      <div className='flex flex-col'>
-        <div className='flex flex-row'>Setup Content</div>
-        <div className='flex flex-col'>
+      </Flexbox>
+      <Flexbox direction='column'>
+        <Flexbox direction='row'>Setup Content</Flexbox>
+        <Flexbox direction='column'>
           {SETUP_STEPS.steps.map((step: SetupStep) => (
-            <div key={step.name} className='flex flex-col'>
+            <Flexbox key={step.name} direction='column'>
               <h2 className='text-xl font-bold mb-2'>{step.name}</h2>
               <p className='mb-4'>{step.description}</p>
               {step.substeps && (
@@ -109,10 +110,10 @@ export default function Setup() {
                   ))}
                 </ul>
               )}
-            </div>
+            </Flexbox>
           ))}
-        </div>
-      </div>
+        </Flexbox>
+      </Flexbox>
     </div>
   );
 }

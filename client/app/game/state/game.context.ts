@@ -1,7 +1,9 @@
 import React, { createContext } from 'react';
 
 interface Player {
+  playerID: number;
   name?: string;
+  coins: number;
 }
 
 export interface GameState {
@@ -9,8 +11,16 @@ export interface GameState {
   currentPlayer?: Player | null;
 }
 
+function getInitialPlayer(id: number): Player {
+  return {
+    playerID: id,
+    coins: 0,
+    name: `Player ${id}`,
+  };
+}
+
 export const INITIAL_GAME_STATE: GameState = {
-  players: [],
+  players: [getInitialPlayer(1), getInitialPlayer(2)],
   currentPlayer: null,
 };
 
