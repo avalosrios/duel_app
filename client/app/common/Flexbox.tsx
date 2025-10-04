@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 type Direction = 'row' | 'column' | 'row-reverse' | 'column-reverse';
 type AlignItems = 'start' | 'end' | 'center' | 'baseline' | 'stretch';
@@ -15,7 +15,7 @@ interface GetClassNameProps {
 
 interface Props extends GetClassNameProps {
   children?: React.ReactNode;
-  className?: string;
+  className?: string | string[];
   style?: React.CSSProperties;
 }
 
@@ -23,11 +23,20 @@ export default function Flexbox({
   children,
   ...props
 }: Props): React.ReactNode {
+  const classProps = useMemo(() => {
+    if (props.className != null) {
+      return typeof props.className === 'string'
+        ? props.className
+        : props.className.join(' ');
+    }
+    return props.className;
+  }, [props.className]);
+
   const className = getClassName(
     {
       ...props,
     },
-    props.className
+    classProps
   );
   return <div className={className}>{children}</div>;
 }

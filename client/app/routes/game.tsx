@@ -14,7 +14,7 @@ export function meta() {
 
 export default function Game(): React.ReactNode {
   return (
-    <div className='@container/main flex-row gap-8'>
+    <div className='container flex-row gap-8'>
       <div
         className='flex flex-col
 align-items: baseline; px-8 py-8 mx-auto gap-8'

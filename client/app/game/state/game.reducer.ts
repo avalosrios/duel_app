@@ -8,6 +8,10 @@ export type GameContextAction =
       payload: { playerID: number; coins: number };
     }
   | {
+      type: 'INIT_ALL_PLAYER_COINS';
+      payload: { coins: number };
+    }
+  | {
       type: 'SET_CURRENT_PLAYER';
       payload: { playerID: number };
     };
@@ -23,6 +27,14 @@ export function gameReducer(
           if (player.playerID === action.payload.playerID) {
             player.coins = action.payload.coins;
           }
+          return player;
+        });
+      });
+    }
+    case 'INIT_ALL_PLAYER_COINS': {
+      return produce<GameState>(state, draft => {
+        draft.players = draft.players.map(player => {
+          player.coins = action.payload.coins;
           return player;
         });
       });
@@ -44,3 +56,7 @@ const DEFAULT_DISPATCH: React.ActionDispatch<
 > = () => {};
 
 export const GameDispatchContext = createContext(DEFAULT_DISPATCH);
+
+export function useGameDispatch() {
+  return React.useContext(GameDispatchContext);
+}
