@@ -4,6 +4,7 @@ type Direction = 'row' | 'column' | 'row-reverse' | 'column-reverse';
 type AlignItems = 'start' | 'end' | 'center' | 'baseline' | 'stretch';
 type Justify = 'start' | 'end' | 'center' | 'between' | 'around';
 type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse';
+type Overflow = 'visible' | 'hidden' | 'scroll' | 'auto' | 'clip';
 
 interface GetClassNameProps {
   direction?: Direction;
@@ -11,6 +12,7 @@ interface GetClassNameProps {
   justify?: Justify;
   alignItems?: AlignItems;
   wrap?: Wrap;
+  overflow?: Overflow;
 }
 
 interface Props extends GetClassNameProps {
@@ -58,7 +60,7 @@ function getClassName(
   props: GetClassNameProps,
   extraClassName?: string
 ): string {
-  const { direction, gap, justify, alignItems, wrap } = props;
+  const { direction, gap, justify, alignItems, wrap, overflow } = props;
   const styles = ['flex'];
   if (direction) {
     styles.push(getDirection(direction));
@@ -74,6 +76,9 @@ function getClassName(
   }
   if (wrap) {
     styles.push(`flex-${wrap}`);
+  }
+  if (overflow) {
+    styles.push(`overflow-${overflow}`);
   }
   const baseClassName = styles.join(' ');
   return [baseClassName, extraClassName].filter(val => val != null).join(' ');
