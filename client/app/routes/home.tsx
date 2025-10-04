@@ -1,7 +1,7 @@
 import { Welcome } from '~/welcome/welcome';
-import type { Route } from '~router/app/+types/root';
 
-export function meta({}: Route.MetaArgs) {
+// {}: Route.MetaArgs
+export function meta() {
   return [
     { title: 'Duel App' },
     { name: 'description', content: 'Welcome to Duel App!' },

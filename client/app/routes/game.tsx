@@ -1,19 +1,20 @@
-import type { Route } from '~router/app/+types/root';
 import { Outlet } from 'react-router';
+import React from 'react';
+import Flexbox from '~/common/Flexbox';
 
-export function meta({}: Route.MetaArgs) {
+// {}: Route.MetaArgs
+export function meta() {
   return [
     { title: 'Duel App Game' },
     { name: 'description', content: 'Actual game of Duel App!' },
   ];
 }
 
-export default function Game() {
+export default function Game(): React.ReactNode {
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <h1>Duel Game</h1>
+    <Flexbox direction='row'>
       {/* Outlet will render the child route */}
       <Outlet />
-    </div>
+    </Flexbox>
   );
 }

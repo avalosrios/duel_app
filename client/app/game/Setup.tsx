@@ -1,4 +1,6 @@
 import type { Route } from '~router/app/+types/root';
+import Flexbox from '~/common/Flexbox';
+import SetupStep, { type ISetupStep } from '~/game/setup/SetupStep';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -7,14 +9,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-interface SetupStep {
-  name: string;
-  description: string;
-  substeps?: SetupStep[];
-}
-
 const SETUP_STEPS: {
-  steps: SetupStep[];
+  steps: ISetupStep[];
 } = {
   steps: [
     {
@@ -39,6 +35,7 @@ const SETUP_STEPS: {
     {
       name: 'Starting Coins',
       description: 'Each player begins with 7 coins.',
+      action: 'setup_coins',
     },
     {
       name: 'Wonders Selection',
@@ -85,32 +82,20 @@ const SETUP_STEPS: {
   ],
 };
 
+// TODO: Add a draft page that does the drafting and shows the cards in the deck
+
 export default function Setup() {
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <div>
+    <Flexbox direction='column' gap='2' className={'w-full'}>
+      <Flexbox direction='row'>
         <h1 className='text-2xl font-bold mb-4'>Setup</h1>
-      </div>
-      <div className='flex flex-col'>
-        <div className='flex flex-row'>Setup Content</div>
-        <div className='flex flex-col'>
-          {SETUP_STEPS.steps.map((step: SetupStep) => (
-            <div key={step.name} className='flex flex-col'>
-              <h2 className='text-xl font-bold mb-2'>{step.name}</h2>
-              <p className='mb-4'>{step.description}</p>
-              {step.substeps && (
-                <ul className='list-disc list-inside'>
-                  {step.substeps.map((substep: SetupStep) => (
-                    <li key={substep.name} className='mb-2'>
-                      <strong>{substep.name}:</strong> {substep.description}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      </Flexbox>
+      <Flexbox direction='column' gap='4'>
+        <Flexbox direction='row'>Setup Content</Flexbox>
+        {SETUP_STEPS.steps.map((step: ISetupStep) => (
+          <SetupStep key={step.name} step={step} />
+        ))}
+      </Flexbox>
+    </Flexbox>
   );
 }

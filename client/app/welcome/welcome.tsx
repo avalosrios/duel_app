@@ -29,5 +29,3 @@ export function Welcome(): React.ReactNode {
     </main>
   );
 }
-
-const resources = [];
