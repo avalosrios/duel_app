@@ -6,6 +6,7 @@ import Button from '~/common/Button';
 
 interface SetupStepHeaderProps {
   step: ISetupStep;
+  isNextDisabled?: boolean;
 }
 
 function useGoBack(): () => void {
@@ -21,6 +22,7 @@ function useGoBack(): () => void {
 
 export default function SetupStepHeader({
   step,
+  isNextDisabled = false,
 }: SetupStepHeaderProps): React.ReactElement {
   const { setCurrentStep, stepHistory } = useSetupContext();
   const goBack = useGoBack();
@@ -54,6 +56,7 @@ export default function SetupStepHeader({
             size='compact'
             label='Next'
             type='primary'
+            isDisabled={isNextDisabled}
             onClick={handleNextStep}
           />
         )}

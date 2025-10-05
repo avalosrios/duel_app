@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Flexbox from '~/common/Flexbox';
 import stylePadding from '~/common/stylePadding';
-import { capitalize } from 'lodash-es';
-import Button from '~/common/Button';
-import useGameSetupPlayerCoins from '~/game/hooks/useGameSetupPlayerCoins';
+import SetupStepContent from '~/game/setup/SetupStepContent';
 
-type SetupAction =
+export type SetupAction =
   | 'setup_coins'
   | 'place_conflict_pawn'
   | 'setup_wonders'
@@ -23,20 +21,24 @@ export interface ISetupStep {
 interface Props {
   step: ISetupStep;
   children?: React.ReactNode;
+  onCompleteAction?: (action: SetupAction) => void;
 }
 
-function toTitleCase(snakeCase: string): string {
-  return capitalize(snakeCase.replace(/_/g, ' '));
-}
-
-export default function SetupStep({ step }: Props): React.ReactNode {
+export default function SetupStep({
+  step,
+  onCompleteAction,
+}: Props): React.ReactNode {
   const substeps = step.substeps ?? [];
+  const handleOnComplete = useCallback(() => {
+    if (step.action != null) {
+      onCompleteAction?.(step.action);
+    }
+  }, [onCompleteAction, step.action]);
   return (
     <Flexbox direction='column' className={[stylePadding.start(2), 'm-4']}>
       <Flexbox direction='column' className={'ms-4'}>
         <h2 className='text font-bold mb-2'>{step.name}</h2>
-        <p className='mb-4'>{step.description}</p>
-        {step.action != null && <StepActionButton action={step.action} />}
+        <SetupStepContent step={step} onClickAction={handleOnComplete} />
       </Flexbox>
       {substeps.map((substep: ISetupStep, idx: number) => (
         <Flexbox
@@ -48,26 +50,6 @@ export default function SetupStep({ step }: Props): React.ReactNode {
           <SetupStep step={substep} />
         </Flexbox>
       ))}
-    </Flexbox>
-  );
-}
-
-interface SetupActionProps {
-  action: SetupAction;
-}
-function StepActionButton({ action }: SetupActionProps): React.ReactNode {
-  const setupPlayerCoins = useGameSetupPlayerCoins();
-  const handleDispatchAction = (action: SetupAction) => {
-    if (action === 'setup_coins') {
-      setupPlayerCoins();
-    }
-  };
-  return (
-    <Flexbox direction='row' gap='4'>
-      <Button
-        label={toTitleCase(action)}
-        onClick={() => handleDispatchAction(action)}
-      />
     </Flexbox>
   );
 }
