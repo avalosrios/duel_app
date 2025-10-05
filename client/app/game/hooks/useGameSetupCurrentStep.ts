@@ -3,10 +3,13 @@ import { useSetupContext } from '~/game/state/setup.context';
 import useGameSetupStep from '~/game/hooks/useGameSetupStep';
 
 export default function useGameSetupCurrentStep(): ISetupStep | null {
-  const { currentStep } = useSetupContext();
+  const { stepHistory } = useSetupContext();
   const getStep = useGameSetupStep();
-  if (currentStep == null) {
+
+  if (stepHistory.length === 0) {
     return null;
   }
-  return getStep(currentStep);
+
+  const currentStepName = stepHistory[stepHistory.length - 1];
+  return getStep(currentStepName);
 }

@@ -1,15 +1,13 @@
 import { createContext, useContext } from 'react';
 
 export interface SetupContextState {
-  currentStep: string | null; // Using the step names for now
-  setCurrentStep: (step: string) => void;
   stepHistory: string[]; // Array tracking the path of steps taken
+  setCurrentStep: (step: string) => void;
 }
 
 const setupContext = createContext<SetupContextState>({
-  currentStep: null,
-  setCurrentStep: () => {},
   stepHistory: [],
+  setCurrentStep: () => {},
 });
 
 export function useSetupContext(): SetupContextState {

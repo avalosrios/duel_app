@@ -9,8 +9,6 @@ export default function GameSetupProvider({
   children,
   initialStep,
 }: Props): React.ReactNode {
-  // TODO: Do we really need the current step? Isn't it just the last step in the history?
-  const [currentStep, setCurrentStepState] = useState<string>(initialStep);
   const [stepHistory, setStepHistory] = useState<string[]>([initialStep]);
 
   const setCurrentStep = (step: string) => {
@@ -18,12 +16,10 @@ export default function GameSetupProvider({
     // if the history contains the step, then it means we are going back
     const indexOfStep = stepHistory.indexOf(step);
     if (indexOfStep >= 0) {
-      // we are going back
-      setCurrentStepState(stepHistory[indexOfStep - 1]);
-      setStepHistory(prev => prev.slice(0, indexOfStep));
-      return;
+      // we are going back, slice to that step
+      setStepHistory(stepHistory.slice(0, indexOfStep + 1));
     } else {
-      setCurrentStepState(step);
+      // moving forward to a new step
       setStepHistory(prev => [...prev, step]);
     }
   };
@@ -31,9 +27,8 @@ export default function GameSetupProvider({
   return (
     <SetupContext
       value={{
-        currentStep,
-        setCurrentStep,
         stepHistory,
+        setCurrentStep,
       }}
     >
       {children}

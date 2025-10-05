@@ -5,12 +5,14 @@ import Button from '~/common/Button';
 import { useSetupContext } from '~/game/state/setup.context';
 
 function useGoBack(): () => void {
-  const { setCurrentStep: goToPreviousStepOf, currentStep } = useSetupContext();
-  // get the index of the current step and go back one
-  if (currentStep == null) {
-    return () => {};
-  }
-  return () => goToPreviousStepOf(currentStep);
+  const { setCurrentStep, stepHistory } = useSetupContext();
+  return () => {
+    if (stepHistory.length > 1) {
+      // Go back to the previous step
+      const previousStepName = stepHistory[stepHistory.length - 2];
+      setCurrentStep(previousStepName);
+    }
+  };
 }
 
 export default function SetupStepContainer(): React.ReactNode {
@@ -26,6 +28,7 @@ export default function SetupStepContainer(): React.ReactNode {
     }
     return;
   };
+  const hasNextStep = currentStep?.next != null;
 
   if (currentStep == null) {
     return null;
@@ -35,10 +38,12 @@ export default function SetupStepContainer(): React.ReactNode {
       <h1>Current Step: {currentStep.name}</h1>
       <Flexbox direction='column' gap='2'>
         {!isFirstStep && <Button label={'Back'} onClick={goBack} />}
-        <Button
-          label={'Next'}
-          onClick={() => handleNextStep(currentStep.next)}
-        />
+        {hasNextStep && (
+          <Button
+            label={'Next'}
+            onClick={() => handleNextStep(currentStep.next)}
+          />
+        )}
       </Flexbox>
     </Flexbox>
   );
