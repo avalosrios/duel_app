@@ -33,8 +33,8 @@ export default function SetupStep({ step }: Props): React.ReactNode {
   const substeps = step.substeps ?? [];
   return (
     <Flexbox direction='column' className={[stylePadding.start(2), 'm-4']}>
-      <Flexbox direction='column' gap='2' className={'ms-4'}>
-        <h2 className='text-xl font-bold mb-2'>{step.name}</h2>
+      <Flexbox direction='column' className={'ms-4'}>
+        <h2 className='text font-bold mb-2'>{step.name}</h2>
         <p className='mb-4'>{step.description}</p>
         {step.action != null && <StepActionButton action={step.action} />}
       </Flexbox>
