@@ -1,15 +1,35 @@
 import React from 'react';
 
+type ButtonSize = 'default' | 'compact';
+type ButtonType = 'primary' | 'default' | 'secondary';
+
 interface Props {
   label: string;
   onClick?: () => void;
+  size?: ButtonSize;
+  type?: ButtonType;
 }
 
-export default function Button({ label, onClick }: Props): React.ReactNode {
-  // TODO: Add pattern for primary/secondary/tertiary buttons
+const TYPE_CLASS_MAP: Record<ButtonType, string> = {
+  primary: 'bg-blue-500 text-white hover:bg-blue-600',
+  default: 'bg-gray-600 text-white hover:bg-gray-700',
+  secondary:
+    'bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-100',
+};
+
+export default function Button({
+  label,
+  onClick,
+  size = 'default',
+  type = 'default',
+}: Props): React.ReactNode {
+  const baseClasses = 'bg-blue-500 text-white rounded';
+  const sizeClasses = size === 'compact' ? 'px-2 py-1 text-sm' : 'px-4 py-2';
+  const typeClasses = TYPE_CLASS_MAP[type];
+
   return (
     <button
-      className='bg-blue-500 text-white px-4 py-2 rounded'
+      className={`${baseClasses} ${sizeClasses} ${typeClasses}`}
       onClick={onClick}
     >
       {label}

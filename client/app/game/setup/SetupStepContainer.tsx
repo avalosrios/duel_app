@@ -37,10 +37,19 @@ export default function SetupStepContainer(): React.ReactNode {
     <Flexbox direction='row' gap='4'>
       <h1>Current Step: {currentStep.name}</h1>
       <Flexbox direction='column' gap='2'>
-        {!isFirstStep && <Button label={'Back'} onClick={goBack} />}
+        {!isFirstStep && (
+          <Button
+            type='secondary'
+            size='compact'
+            label={'Back'}
+            onClick={goBack}
+          />
+        )}
         {hasNextStep && (
           <Button
-            label={'Next'}
+            size='compact'
+            label='Next'
+            type='primary'
             onClick={() => handleNextStep(currentStep.next)}
           />
         )}
