@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Flexbox from '~/common/Flexbox';
 import useGameSetupCurrentStep from '~/game/hooks/useGameSetupCurrentStep';
 import Button from '~/common/Button';
@@ -15,28 +15,30 @@ function useGoBack(): () => void {
   };
 }
 
-export default function SetupStepContainer(): React.ReactNode {
+export default function SetupStepContainer(): React.ReactElement | null {
   // get the current step from the context
   const { setCurrentStep, stepHistory } = useSetupContext();
   const goBack = useGoBack();
   const currentStep = useGameSetupCurrentStep();
 
   const isFirstStep = stepHistory.length <= 1;
-  const handleNextStep = (nextStep: string | null | undefined) => {
+  const handleNextStep = useCallback(() => {
+    const nextStep = currentStep?.next;
     if (nextStep != null) {
       setCurrentStep(nextStep);
     }
-    return;
-  };
+  }, [currentStep?.next, setCurrentStep]);
   const hasNextStep = currentStep?.next != null;
 
   if (currentStep == null) {
     return null;
   }
   return (
-    <Flexbox direction='row' gap='4'>
-      <h1>Current Step: {currentStep.name}</h1>
-      <Flexbox direction='column' gap='2'>
+    <Flexbox direction='row' gap='8' alignItems='baseline' justify='between'>
+      <Flexbox>
+        <h1>Current Step: {currentStep.name}</h1>
+      </Flexbox>
+      <Flexbox direction='row' gap='2'>
         {!isFirstStep && (
           <Button
             type='secondary'
@@ -50,7 +52,7 @@ export default function SetupStepContainer(): React.ReactNode {
             size='compact'
             label='Next'
             type='primary'
-            onClick={() => handleNextStep(currentStep.next)}
+            onClick={handleNextStep}
           />
         )}
       </Flexbox>

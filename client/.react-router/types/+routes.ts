@@ -13,15 +13,46 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/game": {
+    params: {};
+  };
+  "/game/setup": {
+    params: {};
+  };
+  "/*": {
+    params: {
+      "*": string;
+    };
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/";
+    page: "/" | "/game" | "/game/setup" | "/*";
   };
   "routes/home.tsx": {
     id: "routes/home";
     page: "/";
+  };
+  "./game/GameLayout.tsx": {
+    id: "game/GameLayout";
+    page: "/game" | "/game/setup";
+  };
+  "routes/game.tsx": {
+    id: "routes/game";
+    page: "/game" | "/game/setup";
+  };
+  "./game/GameHome.tsx": {
+    id: "game/GameHome";
+    page: "/game";
+  };
+  "./game/Setup.tsx": {
+    id: "game/Setup";
+    page: "/game/setup";
+  };
+  "./common/Catchall.tsx": {
+    id: "common/Catchall";
+    page: "/*";
   };
 };

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 type Direction = 'row' | 'column' | 'row-reverse' | 'column-reverse';
 type AlignItems = 'start' | 'end' | 'center' | 'baseline' | 'stretch';
-type Justify = 'start' | 'end' | 'center' | 'between' | 'around';
+type Justify = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly';
 type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 type Overflow = 'visible' | 'hidden' | 'scroll' | 'auto' | 'clip';
 
@@ -62,22 +62,22 @@ function getClassName(
 ): string {
   const { direction, gap, justify, alignItems, wrap, overflow } = props;
   const styles = ['flex'];
-  if (direction) {
+  if (direction != null) {
     styles.push(getDirection(direction));
   }
-  if (gap) {
+  if (gap != null) {
     styles.push(`gap-${gap}`);
   }
-  if (justify) {
+  if (justify != null) {
     styles.push(`justify-${justify}`);
   }
-  if (alignItems) {
+  if (alignItems != null) {
     styles.push(`items-${alignItems}`);
   }
-  if (wrap) {
+  if (wrap != null) {
     styles.push(`flex-${wrap}`);
   }
-  if (overflow) {
+  if (overflow != null) {
     styles.push(`overflow-${overflow}`);
   }
   const baseClassName = styles.join(' ');
