@@ -47,7 +47,7 @@ export default function MilitaryGrid(): React.ReactNode {
     };
   });
   return (
-    <div className='container flex flex-row w-full justify-center'>
+    <div className='flex flex-row w-full justify-center'>
       {linearBoard.map((square, idx) => (
         <BoardSquare key={idx} square={square} />
       ))}

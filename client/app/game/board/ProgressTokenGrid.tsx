@@ -33,7 +33,7 @@ function ProgressToken({ token }: ProgressTokenProps): React.ReactNode {
   return (
     <Flexbox
       className={[
-        stylePadding.horiz(4),
+        stylePadding.horiz['4'],
         'bg-emerald-500',
         'border-emerald-200',
         'rounded-full',

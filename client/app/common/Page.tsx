@@ -8,7 +8,7 @@ interface Props {
 
 export default function Page({ children }: Props): React.ReactNode {
   return (
-    <Flexbox direction='column' className={['h-screen', stylePadding.all(4)]}>
+    <Flexbox direction='column' className={['h-screen', stylePadding.all['4']]}>
       {children}
     </Flexbox>
   );

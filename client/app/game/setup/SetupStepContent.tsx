@@ -13,8 +13,14 @@ export default function SetupStepContent({
   onClickAction,
 }: Props): React.ReactNode {
   return (
-    <Flexbox>
-      <p className='mb-4'>{step.description}</p>
+    <Flexbox
+      alignItems='baseline'
+      direction='row'
+      gap='4'
+      justify='between'
+      className={['w-1/2', 'mt-4']}
+    >
+      <p>{step.description}</p>
       {step.action != null && (
         <StepActionButton action={step.action} onComplete={onClickAction} />
       )}

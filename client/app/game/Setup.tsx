@@ -15,12 +15,10 @@ export function meta({}: Route.MetaArgs) {
 export default function Setup() {
   return (
     <GameSetupProvider initialStep={'Board Setup'}>
-      <div className='container'>
-        <Flexbox direction='row'>
-          <h1 className='text-2xl font-bold mb-4'>Setup</h1>
-        </Flexbox>
-        <SetupStepContainer />
-      </div>
+      <Flexbox direction='row'>
+        <h1 className='text-2xl font-bold mb-4'>Setup</h1>
+      </Flexbox>
+      <SetupStepContainer />
     </GameSetupProvider>
   );
 }

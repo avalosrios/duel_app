@@ -14,7 +14,7 @@ export interface ISetupStep {
   name: string;
   description: string;
   next?: string; // Name of the next step
-  action?: SetupAction; // This should be a dispatcheable action
+  action?: SetupAction; // This should be a dispatcher action
   substeps?: ISetupStep[];
 }
 
@@ -35,7 +35,7 @@ export default function SetupStep({
     }
   }, [onCompleteAction, step.action]);
   return (
-    <Flexbox direction='column' className={[stylePadding.start(2), 'm-4']}>
+    <Flexbox direction='column' className={[stylePadding.start['4']]}>
       <Flexbox direction='column' className={'ms-4'}>
         <h2 className='text font-bold mb-2'>{step.name}</h2>
         <SetupStepContent step={step} onClickAction={handleOnComplete} />
@@ -45,7 +45,7 @@ export default function SetupStep({
           key={idx}
           direction='row'
           gap='4'
-          className={stylePadding.all(8)}
+          className={stylePadding.all['8']}
         >
           <SetupStep step={substep} />
         </Flexbox>

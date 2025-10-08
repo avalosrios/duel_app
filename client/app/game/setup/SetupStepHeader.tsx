@@ -38,27 +38,31 @@ export default function SetupStepHeader({
     }
   }, [step.next, setCurrentStep]);
   return (
-    <Flexbox direction='row' gap='8' alignItems='baseline' justify='between'>
-      <Flexbox>
+    <Flexbox direction='row' justify='between' className={['mb-4', 'grow']}>
+      <Flexbox direction='column'>
         <h1 className='text-xl font-bold mb-2'>{step.name}</h1>
       </Flexbox>
       <Flexbox direction='row' gap='2'>
         {!isFirstStep && (
-          <Button
-            type='secondary'
-            size='compact'
-            label={'Back'}
-            onClick={goBack}
-          />
+          <Flexbox direction='column'>
+            <Button
+              type='secondary'
+              size='compact'
+              label={'Back'}
+              onClick={goBack}
+            />
+          </Flexbox>
         )}
         {hasNextStep && (
-          <Button
-            size='compact'
-            label='Next'
-            type='primary'
-            isDisabled={isNextDisabled}
-            onClick={handleNextStep}
-          />
+          <Flexbox direction='column'>
+            <Button
+              size='compact'
+              label='Next'
+              type='primary'
+              isDisabled={isNextDisabled}
+              onClick={handleNextStep}
+            />
+          </Flexbox>
         )}
       </Flexbox>
     </Flexbox>

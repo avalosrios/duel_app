@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import Flexbox from '~/common/Flexbox';
 import useGameSetupCurrentStep from '~/game/hooks/useGameSetupCurrentStep';
 import SetupStepHeader from '~/game/setup/SetupStepHeader';
 import SetupStep, { type SetupAction } from '~/game/setup/SetupStep';
@@ -40,7 +39,7 @@ export default function SetupStepContainer(): React.ReactElement | null {
 
   const hasPendingActions = stepPendingActions.length > 0;
   return (
-    <Flexbox direction='column' gap='4' className={['mb-4', 'w-9/10']}>
+    <>
       <SetupStepHeader step={currentStep} isNextDisabled={hasPendingActions} />
       <SetupStepContent
         step={currentStep}
@@ -55,6 +54,6 @@ export default function SetupStepContainer(): React.ReactElement | null {
           onCompleteAction={onCompleteAction}
         />
       ))}
-    </Flexbox>
+    </>
   );
 }
