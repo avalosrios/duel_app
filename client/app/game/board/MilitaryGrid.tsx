@@ -34,7 +34,13 @@ export default function MilitaryGrid(): React.ReactNode {
    *
    */
   const bottomRowSizes = [1, 3, 3, 2, 1, 2, 3, 3, 1];
-  let totalSpaces = 0;
+  let totalSpaces =
+    (bottomRowSizes.reduce<number>(
+      (acc: number, size: number) => acc + size,
+      -1 // because we don't want to count the middle space
+    ) *
+      -1) /
+    2;
   const linearBoard: BoardSquare[] = bottomRowSizes.map(item => {
     const spaces: BoardSpace[] = Array(item)
       .fill(EMPTY_BOARD_SPACE)
