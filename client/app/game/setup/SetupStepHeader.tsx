@@ -42,7 +42,7 @@ export default function SetupStepHeader({
       <Flexbox direction='column'>
         <h1 className='text-xl font-bold mb-2'>{step.name}</h1>
       </Flexbox>
-      <Flexbox direction='row' gap='2'>
+      <Flexbox direction='row'>
         {!isFirstStep && (
           <Flexbox direction='column'>
             <Button

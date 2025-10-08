@@ -35,7 +35,7 @@ export default function SetupStep({
     }
   }, [onCompleteAction, step.action]);
   return (
-    <Flexbox direction='column' className={[stylePadding.start['4']]}>
+    <Flexbox direction='column' className={[stylePadding.all['4']]}>
       <Flexbox direction='column' className={'ms-4'}>
         <h2 className='text font-bold mb-2'>{step.name}</h2>
         <SetupStepContent step={step} onClickAction={handleOnComplete} />
@@ -45,7 +45,7 @@ export default function SetupStep({
           key={idx}
           direction='row'
           gap='4'
-          className={stylePadding.all['8']}
+          className={stylePadding.all['4']}
         >
           <SetupStep step={substep} />
         </Flexbox>

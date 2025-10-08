@@ -13,6 +13,7 @@ export const SETUP_STEPS: {
         {
           name: 'Conflict Pawn Tokens',
           description: 'Place the conflict pawn in the middle of the board.',
+          action: 'place_conflict_pawn',
           next: 'Military Tokens',
         },
         {
