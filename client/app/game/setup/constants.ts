@@ -19,6 +19,7 @@ export const SETUP_STEPS: {
         {
           name: 'Military Tokens',
           description: 'Place the tokens face up on the board.',
+          action: 'place_military_tokens',
           next: 'Progress Tokens',
         },
         {

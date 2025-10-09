@@ -22,6 +22,11 @@ export default function useGameDispatchSetup(): (action: SetupAction) => void {
           payload: { position: INITIAL_CONFLICT_PAWN_POSITION },
         });
         break;
+      case 'place_military_tokens':
+        boardDispatch({
+          type: 'INIT_MILITARY_TOKENS',
+        });
+        break;
       default:
         break;
     }

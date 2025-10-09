@@ -6,6 +6,7 @@ import SetupStepContent from '~/game/setup/SetupStepContent';
 export type SetupAction =
   | 'setup_coins'
   | 'place_conflict_pawn'
+  | 'place_military_tokens'
   | 'setup_wonders'
   | 'setup_decks'
   | 'setup_ages';
