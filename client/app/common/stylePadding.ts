@@ -1,39 +1,76 @@
-function horiz(value: number): string {
-  return `px-${value}`;
-}
-
-function ver(value: number): string {
-  return `py-${value}`;
-}
-
-function all(value: number): string {
-  return `p-${value}`;
-}
-
-function top(value: number): string {
-  return `pt-${value}`;
-}
-
-function bottom(value: number): string {
-  return `pb-${value}`;
-}
-
-function end(value: number): string {
-  return `pr-${value}`;
-}
-
-function start(value: number): string {
-  return `pl-${value}`;
-}
-
 const stylePadding = {
-  horiz,
-  ver,
-  top,
-  bottom,
-  end,
-  start,
-  all,
+  horiz: {
+    4: 'px-4',
+    8: 'px-8',
+    12: 'px-12',
+    16: 'px-16',
+    20: 'px-20',
+    24: 'px-24',
+    28: 'px-28',
+    32: 'px-32',
+    36: 'px-36',
+    40: 'px-40',
+  },
+  ver: {
+    4: 'py-4',
+    8: 'py-8',
+    12: 'py-12',
+    16: 'py-16',
+    20: 'py-20',
+    24: 'py-24',
+    28: 'py-28',
+    32: 'py-32',
+  },
+  top: {
+    4: 'pt-4',
+    8: 'pt-8',
+    12: 'pt-12',
+    16: 'pt-16',
+    20: 'pt-20',
+    24: 'pt-24',
+    28: 'pt-28',
+    32: 'pt-32',
+  },
+  bottom: {
+    4: 'pb-4',
+    8: 'pb-8',
+    12: 'pb-12',
+    16: 'pb-16',
+    20: 'pb-20',
+    24: 'pb-24',
+    28: 'pb-28',
+    32: 'pb-32',
+  },
+  end: {
+    4: 'pr-4',
+    8: 'pr-8',
+    12: 'pr-12',
+    16: 'pr-16',
+    20: 'pr-20',
+    24: 'pr-24',
+    28: 'pr-28',
+    32: 'pr-32',
+  },
+  start: {
+    4: 'pl-4',
+    8: 'pl-8',
+    12: 'pl-12',
+    16: 'pl-16',
+    20: 'pl-20',
+    24: 'pl-24',
+    28: 'pl-28',
+    32: 'pl-32',
+  },
+  all: {
+    4: 'p-4',
+    8: 'p-8',
+    12: 'p-12',
+    16: 'p-16',
+    20: 'p-20',
+    24: 'p-24',
+    28: 'p-28',
+    32: 'p-32',
+  },
 };
 
 export default stylePadding;

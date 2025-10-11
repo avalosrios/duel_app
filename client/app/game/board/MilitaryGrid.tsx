@@ -1,21 +1,19 @@
 import React from 'react';
-
-interface BoardSpace {
-  name: string;
-  description: string;
-  colSize: number;
-}
-
-interface BoardSquare {
-  spaces: BoardSpace[];
-  id: string;
-}
+import MilitarySquare from '~/game/board/MilitarySquare';
+import MilitaryVictoryPointSquare from '~/game/board/MilitaryVictoryPointSquare';
+import type { BoardSpace, IBoardSquare, VictoryPoints } from '~/game/types';
 
 const EMPTY_BOARD_SPACE: BoardSpace = {
   name: '',
   description: '',
   colSize: 1,
+  position: 0,
 };
+
+interface Row {
+  size: number;
+  points: VictoryPoints;
+}
 
 export default function MilitaryGrid(): React.ReactNode {
   // 2 rows
@@ -30,24 +28,44 @@ export default function MilitaryGrid(): React.ReactNode {
    * | X | TOKEN / VP        | TOKEN / VP       | TOKEN / VP         | SPACE  | TOKEN / VP       | TOKEN / VP       | TOKEN / VP       | X |
    *
    */
-  const bottomRowSizes = [1, 3, 3, 2, 1, 2, 3, 3, 1];
-  const linearBoard: BoardSquare[] = bottomRowSizes.map(item => {
-    const spaces: BoardSpace[] = Array(item)
+  const bottomRowSizes: Row[] = [
+    { size: 1, points: 0 },
+    { size: 3, points: 10 },
+    { size: 3, points: 5 },
+    { size: 2, points: 2 },
+    { size: 1, points: 0 },
+    { size: 2, points: 2 },
+    { size: 3, points: 5 },
+    { size: 3, points: 10 },
+    { size: 1, points: 0 },
+  ];
+  let totalSpaces =
+    (bottomRowSizes.reduce<number>(
+      (acc: number, { size }) => acc + size,
+      -1 // because we don't want to count the middle space
+    ) *
+      -1) /
+    2;
+  const linearBoard: IBoardSquare[] = bottomRowSizes.map(({ size, points }) => {
+    const spaces: BoardSpace[] = Array(size)
       .fill(EMPTY_BOARD_SPACE)
       .map((space: BoardSpace, idx: number) => {
         return {
-          name: `N-${item + 1}`,
+          name: `N-${size + 1}`,
           description: `Space ${idx + 1}`,
           colSize: 1,
+          position: totalSpaces++,
         };
       });
     return {
       spaces,
-      id: `Square ${item}`,
+      id: `Square ${size}`,
+      victoryPoints: points,
+      position: totalSpaces < 0 ? 'start' : 'end',
     };
   });
   return (
-    <div className='container flex flex-row w-full justify-center'>
+    <div className='flex flex-row w-full justify-center'>
       {linearBoard.map((square, idx) => (
         <BoardSquare key={idx} square={square} />
       ))}
@@ -56,24 +74,18 @@ export default function MilitaryGrid(): React.ReactNode {
 }
 
 interface BoardSquareProps {
-  square: BoardSquare;
+  square: IBoardSquare;
 }
 
 function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
-  // this should be a square with 2 rows
   return (
     <div className='flex flex-col gap-8 border-2 bg-amber-600'>
-      <div className='flex flex-row gap-2 self-center'>
+      <div className='flex flex-row self-center'>
         {square.spaces.map((space, idx) => (
-          <div
-            key={idx}
-            className='flex flex-col self-center border-1 rounded-full'
-          >
-            {space.name}
-          </div>
+          <MilitarySquare key={idx} space={space} />
         ))}
       </div>
-      <div className='flex flex-row self-center'>{square.id}</div>
+      <MilitaryVictoryPointSquare square={square} />
     </div>
   );
 }
