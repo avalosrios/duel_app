@@ -78,8 +78,6 @@ interface BoardSquareProps {
 }
 
 function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
-  // this should be a square with 2 rows
-  // TODO: FIgure out a way to calculate the middle +/- [1,2] and map the military tokens
   return (
     <div className='flex flex-col gap-8 border-2 bg-amber-600'>
       <div className='flex flex-row self-center'>

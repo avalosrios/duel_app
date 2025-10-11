@@ -1,6 +1,6 @@
 import React from 'react';
 import useBoardState from '~/game/hooks/useBoardState';
-import type { BoardSpace } from '~/game/board/MilitaryGrid';
+import type { BoardSpace } from '~/game/types';
 
 interface Props {
   space: BoardSpace;
