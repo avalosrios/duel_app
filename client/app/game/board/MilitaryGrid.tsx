@@ -1,19 +1,7 @@
 import React from 'react';
 import MilitarySquare from '~/game/board/MilitarySquare';
-import Flexbox from '~/common/Flexbox';
-
-export interface BoardSpace {
-  name: string;
-  description: string;
-  colSize: number;
-  position: number;
-}
-type VictoryPoints = 0 | 2 | 5 | 10;
-interface BoardSquare {
-  spaces: BoardSpace[];
-  victoryPoints: VictoryPoints;
-  id: string;
-}
+import MilitaryVictoryPointSquare from '~/game/board/MilitaryVictoryPointSquare';
+import type { BoardSpace, IBoardSquare, VictoryPoints } from '~/game/types';
 
 const EMPTY_BOARD_SPACE: BoardSpace = {
   name: '',
@@ -58,7 +46,7 @@ export default function MilitaryGrid(): React.ReactNode {
     ) *
       -1) /
     2;
-  const linearBoard: BoardSquare[] = bottomRowSizes.map(({ size, points }) => {
+  const linearBoard: IBoardSquare[] = bottomRowSizes.map(({ size, points }) => {
     const spaces: BoardSpace[] = Array(size)
       .fill(EMPTY_BOARD_SPACE)
       .map((space: BoardSpace, idx: number) => {
@@ -73,6 +61,7 @@ export default function MilitaryGrid(): React.ReactNode {
       spaces,
       id: `Square ${size}`,
       victoryPoints: points,
+      position: totalSpaces < 0 ? 'start' : 'end',
     };
   });
   return (
@@ -85,7 +74,7 @@ export default function MilitaryGrid(): React.ReactNode {
 }
 
 interface BoardSquareProps {
-  square: BoardSquare;
+  square: IBoardSquare;
 }
 
 function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
@@ -98,15 +87,7 @@ function BoardSquare({ square }: BoardSquareProps): React.ReactNode {
           <MilitarySquare key={idx} space={space} />
         ))}
       </div>
-      <div className='flex flex-row self-center'>{square.id}</div>
-      {square.victoryPoints > 0 && (
-        <Flexbox
-          alignItems='center'
-          className={['bg-emerald-500', 'self-center', 'w-1/2']}
-        >
-          {square.victoryPoints}
-        </Flexbox>
-      )}
+      <MilitaryVictoryPointSquare square={square} />
     </div>
   );
 }
