@@ -1,16 +1,20 @@
-import type {
-  BoardContextState,
-  MilitaryToken,
-} from '~/game/state/board.context';
+import type { BoardContextState } from '~/game/state/board.context';
 import { produce } from 'immer';
 import React, { createContext, useContext } from 'react';
+import type { MilitaryToken, ProgressToken } from '~/game/types';
+import { PROGRESS_TOKENS } from '~/game/setup/constants';
+import Board from '~/game/board/Board';
+import { take } from 'lodash-es';
 
 export type BoardContextAction =
   | {
       type: 'SET_CONFLICT_PAWN_POSITION';
       payload: { position: number };
     }
-  | { type: 'INIT_MILITARY_TOKENS' };
+  | { type: 'INIT_MILITARY_TOKENS' }
+  | {
+      type: 'INIT_PROGRESS_TOKENS';
+    };
 
 const MILITARY_TOKEN_5: MilitaryToken = {
   coinPenalty: 5,
@@ -46,6 +50,16 @@ export function boardReducer(
         ].map(token => ({ ...token, isSet: true }));
         draft.militaryContext.militaryTokens.start = boardStartTokens;
         draft.militaryContext.militaryTokens.end = boardEndTokens;
+      });
+    }
+    case 'INIT_PROGRESS_TOKENS': {
+      return produce<BoardContextState>(state, draft => {
+        const shuffledProgressTokens =
+          Board.shuffleTokens<ProgressToken>(PROGRESS_TOKENS);
+        draft.progressTokens = take(shuffledProgressTokens, 5).map(token => ({
+          ...token,
+          isSet: true,
+        }));
       });
     }
     default:

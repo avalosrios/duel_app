@@ -1,35 +1,33 @@
 import React from 'react';
-import useBoardState from '~/game/hooks/useBoardState';
-import type { ProgressToken } from '~/game/state/board.context';
 import Flexbox from '~/common/Flexbox';
 import stylePadding from '~/common/stylePadding';
+import type { TokenBoardSpace } from '~/game/types';
+import useBoardState from '~/game/hooks/useBoardState';
 
 const PROGRESS_TOKEN_COUNT = 5;
-const BOARD_BASE: ProgressToken[] = Array<ProgressToken>(
+const BOARD_BASE: TokenBoardSpace[] = Array<TokenBoardSpace>(
   PROGRESS_TOKEN_COUNT
-).fill({ isSet: false });
+).fill({ type: 'progress', token: null });
 
 export default function ProgressTokenGrid(): React.ReactNode {
-  const { progressTokens } = useBoardState();
-  const boardSpaces = BOARD_BASE.map(
-    (defaultToken: ProgressToken, idx: number) => {
-      return progressTokens[idx] ?? defaultToken;
-    }
-  );
   // draw the progress token count as it is default on the board
   return (
     <div className='flex gap-2 bg-emerald-700'>
-      {boardSpaces.map((token: ProgressToken, idx: number) => (
-        <ProgressToken key={idx} token={token} />
+      {BOARD_BASE.map((tokenSpace: TokenBoardSpace, idx: number) => (
+        <ProgressTokenSpace key={idx} position={idx} />
       ))}
     </div>
   );
 }
 
 type ProgressTokenProps = {
-  token: ProgressToken;
+  // tokenSpace: TokenBoardSpace;
+  position: number;
 };
-function ProgressToken({ token }: ProgressTokenProps): React.ReactNode {
+function ProgressTokenSpace({ position }: ProgressTokenProps): React.ReactNode {
+  const { progressTokens } = useBoardState();
+  const targetToken = progressTokens[position] ?? null;
+  const isTokenSet = targetToken?.isSet ?? false;
   return (
     <Flexbox
       className={[
@@ -39,7 +37,7 @@ function ProgressToken({ token }: ProgressTokenProps): React.ReactNode {
         'rounded-full',
       ].join(' ')}
     >
-      {token.isSet ? token?.name : 'Empty'}
+      {isTokenSet ? targetToken.name : 'Empty'}
     </Flexbox>
   );
 }

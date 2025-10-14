@@ -1,16 +1,5 @@
 import React, { createContext } from 'react';
-
-export interface MilitaryToken {
-  coinPenalty: number;
-  position: 1 | 2;
-  isSet: boolean; // Indicates that the token is set on the board
-}
-
-export interface ProgressToken {
-  isSet: boolean; // Indicates that the token is set on the board
-  name?: string;
-  // TODO: There may be more properties here
-}
+import type { MilitaryToken, ProgressToken } from '~/game/types';
 
 export interface BoardMilitaryContextState {
   conflictPawnPosition: { x: number | null }; // Conflict pawn moves right or left
