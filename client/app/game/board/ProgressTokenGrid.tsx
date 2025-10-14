@@ -26,7 +26,6 @@ type ProgressTokenProps = {
 };
 function ProgressTokenSpace({ position }: ProgressTokenProps): React.ReactNode {
   const { progressTokens } = useBoardState();
-  console.log({ progressTokens });
   const targetToken = progressTokens[position] ?? null;
   const isTokenSet = targetToken?.isSet ?? false;
   return (
