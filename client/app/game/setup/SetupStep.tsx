@@ -2,14 +2,7 @@ import React, { useCallback } from 'react';
 import Flexbox from '~/common/Flexbox';
 import stylePadding from '~/common/stylePadding';
 import SetupStepContent from '~/game/setup/SetupStepContent';
-
-export type SetupAction =
-  | 'setup_coins'
-  | 'place_conflict_pawn'
-  | 'place_military_tokens'
-  | 'setup_wonders'
-  | 'setup_decks'
-  | 'setup_ages';
+import type { SetupAction } from '~/game/hooks/useGameDispatchSetup';
 
 export interface ISetupStep {
   name: string;

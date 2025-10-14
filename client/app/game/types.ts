@@ -12,3 +12,22 @@ export interface IBoardSquare {
   position: 'start' | 'end';
   id: string;
 }
+
+export interface IBoardToken {
+  isSet: boolean;
+}
+
+export interface ProgressToken extends IBoardToken {
+  name: string;
+  effects: string[];
+}
+
+export interface MilitaryToken extends IBoardToken {
+  coinPenalty: number;
+  position: 1 | 2;
+}
+
+export interface TokenBoardSpace {
+  type: 'progress';
+  token: ProgressToken | null;
+}

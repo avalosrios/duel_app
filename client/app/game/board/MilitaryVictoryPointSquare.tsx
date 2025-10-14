@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import Flexbox from '~/common/Flexbox';
-import type { IBoardSquare } from '~/game/types';
+import type { IBoardSquare, MilitaryToken } from '~/game/types';
 import useBoardState from '~/game/hooks/useBoardState';
-import type { MilitaryToken } from '~/game/state/board.context';
 
 interface Props {
   square: IBoardSquare;

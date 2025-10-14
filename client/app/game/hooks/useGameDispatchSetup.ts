@@ -1,9 +1,17 @@
-import type { SetupAction } from '~/game/setup/SetupStep';
 import { useGameDispatch } from '~/game/state/game.reducer';
 import { useBoardDispatch } from '~/game/state/board.reducer';
 
 const INITIAL_COINS: number = 7;
 const INITIAL_CONFLICT_PAWN_POSITION: number = 0;
+
+export type SetupAction =
+  | 'setup_coins'
+  | 'place_conflict_pawn'
+  | 'place_military_tokens'
+  | 'place_progress_tokens'
+  | 'setup_wonders'
+  | 'setup_decks'
+  | 'setup_ages';
 
 export default function useGameDispatchSetup(): (action: SetupAction) => void {
   const gameDispatch = useGameDispatch();
@@ -25,6 +33,11 @@ export default function useGameDispatchSetup(): (action: SetupAction) => void {
       case 'place_military_tokens':
         boardDispatch({
           type: 'INIT_MILITARY_TOKENS',
+        });
+        break;
+      case 'place_progress_tokens':
+        boardDispatch({
+          type: 'INIT_PROGRESS_TOKENS',
         });
         break;
       default:
