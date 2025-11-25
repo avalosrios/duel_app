@@ -66,10 +66,21 @@ client/
 ├── app/                          # Application code
 │   ├── common/                   # Shared components (Button, Flexbox, Page)
 │   ├── game/                     # Game-specific modules
-│   │   ├── board/               # Board components (PlayerBoard, MilitaryGrid, etc.)
-│   │   ├── hooks/               # Game-specific hooks
-│   │   ├── setup/               # Setup phase components and logic
-│   │   └── state/               # Context providers and reducers
+│   │   ├── board/               # Board UI components (PlayerBoard, MilitaryGrid, etc.)
+│   │   ├── engine/              # Pure business logic modules
+│   │   │   ├── constants.ts     # All game constants
+│   │   │   ├── board.engine.ts  # Board layout & calculations
+│   │   │   ├── token.engine.ts  # Token logic & placement
+│   │   │   ├── military.engine.ts # Conflict pawn & victory logic
+│   │   │   └── setup.engine.ts  # Setup flow & validation
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── setup/               # Setup phase UI components
+│   │   └── state/               # Unified state management
+│   │       ├── types.ts         # All state & action types
+│   │       ├── store.reducer.ts # Root reducer
+│   │       ├── store.context.ts # Unified contexts
+│   │       ├── GameStoreProvider.tsx # Single provider
+│   │       └── slices/          # Domain-specific reducers
 │   ├── routes/                   # Route components
 │   └── routes.ts                 # Route configuration
 ├── public/                       # Static assets
@@ -78,30 +89,49 @@ client/
 
 ### State Management Architecture
 
-The application uses a **multi-context architecture** with separate concerns:
+The application uses a **unified state store** with clean separation between business logic and UI:
 
-1. **GameContext** (`game.context.ts` + `game.reducer.ts`)
+#### Unified Store (`GameStoreProvider`)
+Single provider that manages all game state through a root reducer with domain slices:
+
+1. **Game Slice** (`state/slices/game.slice.ts`)
    - Manages player state (names, coins, current player)
-   - Actions: `SET_PLAYER_COINS`, `INIT_ALL_PLAYER_COINS`, `SET_CURRENT_PLAYER`
-   - Uses Immer for immutable updates
+   - Actions: `game/SET_PLAYER_COINS`, `game/INIT_ALL_PLAYER_COINS`, `game/SET_CURRENT_PLAYER`
 
-2. **BoardContext** (`board.context.ts` + `board.reducer.ts`)
-   - Manages the game board state
+2. **Board Slice** (`state/slices/board.slice.ts`)
+   - Manages board state (conflict pawn, military tokens, progress tokens)
    - Tracks conflict pawn position (x-axis: -9 to 9)
-   - Manages military tokens (start/end positions)
-   - Handles progress tokens (max 5)
-   - Actions: `SET_CONFLICT_PAWN_POSITION`, `INIT_MILITARY_TOKENS`, `INIT_PROGRESS_TOKENS`
+   - Actions: `board/SET_CONFLICT_PAWN_POSITION`, `board/INIT_MILITARY_TOKENS`, `board/INIT_PROGRESS_TOKENS`
 
-3. **SetupContext** (`setup.context.ts`)
-   - Manages the multi-step game setup flow
-   - Tracks step history and pending actions
-   - Setup actions include: `setup_coins`, `place_conflict_pawn`, `place_military_tokens`, `place_progress_tokens`, `setup_wonders`, `setup_decks`, `setup_ages`
+3. **Setup Slice** (`state/slices/setup.slice.ts`)
+   - Manages multi-step setup flow (step history, pending actions, completion status)
+   - Actions: `setup/SET_CURRENT_STEP`, `setup/COMPLETE_ACTION`, `setup/MARK_COMPLETE`
 
-### Context Provider Pattern
+#### State Access Hooks
+- `useGameStore()` - Access complete unified state
+- `useGameState()` - Access game slice (players, current player)
+- `useBoardState()` - Access board slice (military, tokens)
+- `useSetupState()` - Access setup slice (step history, pending actions)
+- `useGameDispatch()` - Unified dispatch for all actions
+- `useSetupFlow()` - High-level setup action dispatcher
 
-- All context providers follow the pattern: `[Name]ContextProvider.tsx` wraps children with both state context and dispatch context
-- Dispatch contexts use `useReducer` with dedicated reducer functions
-- Custom hooks like `useGameDispatch()`, `useBoardDispatch()` provide typed access to dispatchers
+#### Engine Modules (Pure Business Logic)
+All game logic separated into pure, testable functions:
+- `engine/board.engine.ts` - Board layout generation, space calculations
+- `engine/token.engine.ts` - Token shuffling, placement rules, initialization
+- `engine/military.engine.ts` - Conflict pawn movement, victory conditions
+- `engine/setup.engine.ts` - Setup flow navigation, validation
+- `engine/constants.ts` - All game constants (initial values, token definitions, setup steps)
+
+#### Architecture Pattern
+```
+UI Components → Hooks → Unified Store → Slices → Engine Modules
+```
+- UI components use hooks to access state and dispatch actions
+- Hooks provide clean API (e.g., `useSetupFlow()` for setup actions)
+- Unified store routes actions to appropriate slices (by prefix: `game/`, `board/`, `setup/`)
+- Slices manage state updates using Immer
+- Engine modules provide pure business logic functions
 
 ### Routing
 
@@ -131,13 +161,18 @@ Always use these aliases instead of relative imports.
 
 ### Setup Flow
 
-The game setup is a multi-step process managed through `SetupContext`:
+The game setup is a multi-step process managed through the unified setup slice:
 1. Board Setup (coins, conflict pawn, tokens)
 2. Wonder selection
 3. Deck preparation
 4. Age setup
 
-Each setup step can dispatch actions through `useGameDispatchSetup()` hook.
+Setup actions are dispatched through `useSetupFlow()` hook, which:
+- Dispatches game/board actions to initialize state
+- Tracks pending actions in setup state
+- Marks actions complete when executed
+
+Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_tokens`, `place_progress_tokens`, `setup_wonders`, `setup_decks`, `setup_ages`
 
 ### Component Patterns
 
@@ -151,6 +186,7 @@ Each setup step can dispatch actions through `useGameDispatchSetup()` hook.
 - Use explicit types for component props
 - Interface naming: `I` prefix for public interfaces (e.g., `IBoardSquare`, `IBoardToken`)
 - Enum-like types: use union types (e.g., `type VictoryPoints = 0 | 2 | 5 | 10`)
+- Prefer explicit non empty checks (`!array.length` vs `array.length > 0`) and `value != null` vs `!value`
 
 ### Styling
 
@@ -161,11 +197,28 @@ Each setup step can dispatch actions through `useGameDispatchSetup()` hook.
 
 ## Key Files to Understand
 
-- `app/game/types.ts` - Core type definitions for board, tokens, and game entities
-- `app/game/state/game.reducer.ts` - Main game state reducer
-- `app/game/state/board.reducer.ts` - Board state reducer
-- `app/game/hooks/useGameDispatchSetup.ts` - Setup action dispatcher
-- `app/game/board/Board.ts` - Board logic and utilities
+### Core Architecture
+- `app/game/types.ts` - Domain type definitions (board, tokens, game entities)
+- `app/game/state/types.ts` - State and action type definitions
+- `app/game/state/store.reducer.ts` - Root reducer combining all slices
+- `app/game/state/GameStoreProvider.tsx` - Unified state provider
+
+### State Slices
+- `app/game/state/slices/game.slice.ts` - Player state management
+- `app/game/state/slices/board.slice.ts` - Board state management
+- `app/game/state/slices/setup.slice.ts` - Setup flow management
+
+### Engine Modules (Business Logic)
+- `app/game/engine/constants.ts` - All game constants and configurations
+- `app/game/engine/board.engine.ts` - Board layout generation and calculations
+- `app/game/engine/token.engine.ts` - Token logic and placement rules
+- `app/game/engine/military.engine.ts` - Conflict pawn and victory logic
+- `app/game/engine/setup.engine.ts` - Setup flow validation and navigation
+
+### Hooks
+- `app/game/hooks/useGameStore.ts` - Unified state access with selectors
+- `app/game/hooks/useGameDispatch.ts` - Unified action dispatcher
+- `app/game/hooks/useSetupFlow.ts` - Setup action dispatcher
 
 ## Testing
 

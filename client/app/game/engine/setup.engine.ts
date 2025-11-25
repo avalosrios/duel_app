@@ -74,17 +74,16 @@ export function getRequiredActions(step: ISetupStep): SetupActionType[] {
   const actions: SetupActionType[] = [];
 
   // Add main step action if it exists
-  if (step.action) {
+  if (step.action != null) {
     actions.push(step.action as SetupActionType);
   }
 
   // Add substep actions if they exist
-  if (step.substeps) {
-    step.substeps.forEach(substep => {
-      if (substep.action) {
-        actions.push(substep.action as SetupActionType);
-      }
-    });
+  if (step.substeps != null) {
+    const substepActions = step.substeps.flatMap(substep =>
+      getRequiredActions(substep)
+    );
+    actions.push(...substepActions);
   }
 
   return actions;
