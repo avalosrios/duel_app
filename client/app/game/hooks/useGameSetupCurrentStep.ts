@@ -1,9 +1,9 @@
 import type { ISetupStep } from '~/game/setup/SetupStep';
-import { useSetupContext } from '~/game/state/setup.context';
+import { useSetupState } from '~/game/hooks/useGameStore';
 import useGameSetupStep from '~/game/hooks/useGameSetupStep';
 
 export default function useGameSetupCurrentStep(): ISetupStep | null {
-  const { stepHistory } = useSetupContext();
+  const { stepHistory } = useSetupState();
   const getStep = useGameSetupStep();
 
   if (stepHistory.length === 0) {

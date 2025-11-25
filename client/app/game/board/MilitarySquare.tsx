@@ -1,5 +1,5 @@
 import React from 'react';
-import useBoardState from '~/game/hooks/useBoardState';
+import { useBoardState } from '~/game/hooks/useGameStore';
 import type { BoardSpace } from '~/game/types';
 
 interface Props {

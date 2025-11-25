@@ -1,38 +1,27 @@
 import React, { useMemo } from 'react';
 import Flexbox from '~/common/Flexbox';
 import type { IBoardSquare, MilitaryToken } from '~/game/types';
-import useBoardState from '~/game/hooks/useBoardState';
+import { useBoardState } from '~/game/hooks/useGameStore';
+import * as TokenEngine from '~/game/engine/token.engine';
 
 interface Props {
   square: IBoardSquare;
 }
 
-function findTargetToken(
-  tokens: MilitaryToken[],
-  square: IBoardSquare
-): MilitaryToken | null {
-  if (square.victoryPoints === 0 || square.victoryPoints % 5 !== 0) {
-    return null;
-  }
-  // for the victory points == 10, it should set the Military Token in position 2
-  // for the victory points == 5, it should set the Military Token in position 1
-  const position = square.victoryPoints / 5;
-  return tokens.find(token => token.position === position) ?? null;
-}
-
 export default function MilitaryVictoryPointSquare({
   square,
 }: Props): React.ReactNode {
-  // for the victory points == 10, it should set the Military Token in position 2
-  // for the victory points == 5, it should set the Military Token in position 1
   const { militaryContext } = useBoardState();
   const { militaryTokens } = militaryContext;
-  // now we need to know if the square is on the start or end of the board
+
+  // Find military token for this square using engine module
   const militaryToken = useMemo(() => {
     const tokenList = militaryTokens[square.position];
-    return findTargetToken(tokenList, square);
-  }, [militaryTokens, square]);
+    return TokenEngine.findMilitaryToken(tokenList, square.victoryPoints);
+  }, [militaryTokens, square.position, square.victoryPoints]);
+
   const hasMilitaryToken = militaryToken != null;
+
   return (
     <>
       <div className='flex flex-row self-center'>{square.id}</div>

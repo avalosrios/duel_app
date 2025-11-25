@@ -1,22 +1,22 @@
 import React, { useCallback } from 'react';
 import Button from '~/common/Button';
-import type { SetupAction } from '~/game/setup/SetupStep';
+import type { SetupActionType } from '~/game/state/types';
 import { toTitleCase } from '~/common/utils';
-import useGameDispatchSetup from '~/game/hooks/useGameDispatchSetup';
+import useSetupFlow from '~/game/hooks/useSetupFlow';
 
 interface SetupActionProps {
-  action: SetupAction;
+  action: SetupActionType;
   onComplete?: () => void;
 }
 export default function StepActionButton({
   action,
   onComplete,
 }: SetupActionProps): React.ReactNode {
-  const setupDispatch = useGameDispatchSetup();
+  const executeSetupAction = useSetupFlow();
   const handleDispatchAction = useCallback(() => {
-    setupDispatch(action);
+    executeSetupAction(action);
     onComplete?.();
-  }, [action, onComplete, setupDispatch]);
+  }, [action, onComplete, executeSetupAction]);
   return (
     <Button
       size='compact'

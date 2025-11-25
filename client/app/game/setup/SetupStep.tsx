@@ -2,20 +2,20 @@ import React, { useCallback } from 'react';
 import Flexbox from '~/common/Flexbox';
 import stylePadding from '~/common/stylePadding';
 import SetupStepContent from '~/game/setup/SetupStepContent';
-import type { SetupAction } from '~/game/hooks/useGameDispatchSetup';
+import type { SetupActionType } from '~/game/state/types';
 
 export interface ISetupStep {
   name: string;
   description: string;
   next?: string; // Name of the next step
-  action?: SetupAction; // This should be a dispatcher action
+  action?: SetupActionType; // This should be a dispatcher action
   substeps?: ISetupStep[];
 }
 
 interface Props {
   step: ISetupStep;
   children?: React.ReactNode;
-  onCompleteAction?: (action: SetupAction) => void;
+  onCompleteAction?: (action: SetupActionType) => void;
 }
 
 export default function SetupStep({
