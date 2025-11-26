@@ -1,5 +1,5 @@
 import type { ISetupStep } from '~/game/setup/SetupStep';
-import { SETUP_STEPS } from '~/game/setup/constants';
+import { SETUP_STEPS } from '~/game/engine/constants';
 
 export default function useGameSetupStep(): (
   name: string
