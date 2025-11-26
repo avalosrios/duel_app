@@ -1,5 +1,10 @@
-import type { IBoardToken, MilitaryToken, ProgressToken, VictoryPoints } from '~/game/types';
-import { MILITARY_TOKENS, PROGRESS_TOKENS, GAME_CONFIG } from './constants';
+import type {
+  IBoardToken,
+  MilitaryToken,
+  ProgressToken,
+  VictoryPoints,
+} from '~/game/types';
+import { GAME_CONFIG, MILITARY_TOKENS, PROGRESS_TOKENS } from './constants';
 
 /**
  * Shuffles an array of tokens using Fisher-Yates algorithm
@@ -91,8 +96,11 @@ export function initializeMilitaryTokens(): {
  * @returns Array of 5 randomly selected progress tokens with isSet = true
  */
 export function initializeProgressTokens(): ProgressToken[] {
-  const shuffled = shuffleTokens(PROGRESS_TOKENS);
-  return shuffled
-    .slice(0, GAME_CONFIG.MAX_PROGRESS_TOKENS)
-    .map(token => ({ ...token, isSet: true }));
+  return selectRandomTokens(
+    PROGRESS_TOKENS,
+    GAME_CONFIG.MAX_PROGRESS_TOKENS
+  ).map(token => ({
+    ...token,
+    isSet: true,
+  }));
 }

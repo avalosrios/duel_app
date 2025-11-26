@@ -1,10 +1,11 @@
-import React, { type ReactNode, useMemo, useReducer } from 'react';
-import { GameStoreContext, GameStoreDispatchContext } from './store.context';
-import { rootReducer, INITIAL_STORE_STATE } from './store.reducer';
+import React, { type ReactNode, useEffect } from 'react';
+import { Provider, useSetAtom } from 'jotai';
+import { stepHistoryAtom } from './atoms';
 
 /**
- * Unified game store provider
+ * Unified game store provider using Jotai
  * Replaces: GameContextProvider, BoardContextProvider, GameSetupProvider
+ * Updated to use Jotai's Provider for atomic state management
  */
 
 interface Props {
@@ -12,31 +13,29 @@ interface Props {
   initialSetupStep?: string; // For initializing setup flow on /game/setup route
 }
 
+/**
+ * Internal component to initialize atoms on mount
+ */
+function AtomInitializer({ initialSetupStep }: { initialSetupStep?: string }) {
+  const setStepHistory = useSetAtom(stepHistoryAtom);
+
+  useEffect(() => {
+    if (initialSetupStep) {
+      setStepHistory([initialSetupStep]);
+    }
+  }, [initialSetupStep, setStepHistory]);
+
+  return null;
+}
+
 export default function GameStoreProvider({
   children,
   initialSetupStep,
 }: Props): ReactNode {
-  // Initialize store with optional setup step
-  const initialValue = useMemo(() => {
-    if (initialSetupStep) {
-      return {
-        ...INITIAL_STORE_STATE,
-        setup: {
-          ...INITIAL_STORE_STATE.setup,
-          stepHistory: [initialSetupStep],
-        },
-      };
-    }
-    return INITIAL_STORE_STATE;
-  }, [initialSetupStep]);
-
-  const [state, dispatch] = useReducer(rootReducer, initialValue);
-
   return (
-    <GameStoreContext.Provider value={state}>
-      <GameStoreDispatchContext.Provider value={dispatch}>
-        {children}
-      </GameStoreDispatchContext.Provider>
-    </GameStoreContext.Provider>
+    <Provider>
+      {initialSetupStep && <AtomInitializer initialSetupStep={initialSetupStep} />}
+      {children}
+    </Provider>
   );
 }

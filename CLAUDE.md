@@ -11,7 +11,7 @@ This is a web-based implementation of a board game (appears to be 7 Wonders Duel
 - **Framework**: React Router v7 (with SSR)
 - **Language**: TypeScript (strict mode enabled)
 - **Styling**: TailwindCSS v4
-- **State Management**: React Context + useReducer with Immer for immutable updates
+- **State Management**: Jotai 2.15.1 (atomic state management for fine-grained reactivity)
 - **Build Tool**: Vite
 - **Runtime**: Node.js 24.3.0
 - **Package Manager**: npm 11.4.2
@@ -75,12 +75,10 @@ client/
 │   │   │   └── setup.engine.ts  # Setup flow & validation
 │   │   ├── hooks/               # Custom React hooks
 │   │   ├── setup/               # Setup phase UI components
-│   │   └── state/               # Unified state management
+│   │   └── state/               # Atomic state management (Jotai)
 │   │       ├── types.ts         # All state & action types
-│   │       ├── store.reducer.ts # Root reducer
-│   │       ├── store.context.ts # Unified contexts
-│   │       ├── GameStoreProvider.tsx # Single provider
-│   │       └── slices/          # Domain-specific reducers
+│   │       ├── atoms.ts         # Jotai atoms & write-only actions
+│   │       └── GameStoreProvider.tsx # Jotai provider wrapper
 │   ├── routes/                   # Route components
 │   └── routes.ts                 # Route configuration
 ├── public/                       # Static assets
@@ -89,30 +87,39 @@ client/
 
 ### State Management Architecture
 
-The application uses a **unified state store** with clean separation between business logic and UI:
+The application uses **Jotai** for atomic state management with clean separation between business logic and UI:
 
-#### Unified Store (`GameStoreProvider`)
-Single provider that manages all game state through a root reducer with domain slices:
+#### Atomic State (`state/atoms.ts`)
+All state is managed through fine-grained Jotai atoms for optimal performance:
 
-1. **Game Slice** (`state/slices/game.slice.ts`)
-   - Manages player state (names, coins, current player)
-   - Actions: `game/SET_PLAYER_COINS`, `game/INIT_ALL_PLAYER_COINS`, `game/SET_CURRENT_PLAYER`
+**Primitive Atoms (Base State)**
+- `playersAtom` - Array of 2 players with coins
+- `currentPlayerIdAtom` - ID of the active player
+- `conflictPawnPositionAtom` - Conflict pawn position (-9 to 9)
+- `militaryTokensAtom` - Military tokens at start/end positions
+- `progressTokensAtom` - Progress tokens (max 5)
+- `stepHistoryAtom` - Setup step navigation history
+- `pendingActionsAtom` - Setup actions waiting to be completed
+- `isSetupCompleteAtom` - Setup completion status
 
-2. **Board Slice** (`state/slices/board.slice.ts`)
-   - Manages board state (conflict pawn, military tokens, progress tokens)
-   - Tracks conflict pawn position (x-axis: -9 to 9)
-   - Actions: `board/SET_CONFLICT_PAWN_POSITION`, `board/INIT_MILITARY_TOKENS`, `board/INIT_PROGRESS_TOKENS`
+**Derived Atoms (Computed State)**
+- `currentPlayerAtom` - Computed from playersAtom + currentPlayerIdAtom
+- `gameStateAtom` - Full game state (for compatibility)
+- `boardStateAtom` - Full board state (for compatibility)
+- `setupStateAtom` - Full setup state (for compatibility)
 
-3. **Setup Slice** (`state/slices/setup.slice.ts`)
-   - Manages multi-step setup flow (step history, pending actions, completion status)
-   - Actions: `setup/SET_CURRENT_STEP`, `setup/COMPLETE_ACTION`, `setup/MARK_COMPLETE`
+**Action Atoms (Write-Only)**
+- `setPlayerCoinsAtom`, `initAllPlayerCoinsAtom`, `setCurrentPlayerAtom` - Game actions
+- `setConflictPawnPositionAtom`, `initMilitaryTokensAtom`, `initProgressTokensAtom` - Board actions
+- `setCurrentSetupStepAtom`, `completeSetupActionAtom`, `markSetupCompleteAtom` - Setup actions
+- `dispatchSetupActionAtom` - Composite setup action dispatcher
 
 #### State Access Hooks
-- `useGameStore()` - Access complete unified state
-- `useGameState()` - Access game slice (players, current player)
-- `useBoardState()` - Access board slice (military, tokens)
-- `useSetupState()` - Access setup slice (step history, pending actions)
-- `useGameDispatch()` - Unified dispatch for all actions
+- `useGameStore()` - Access complete unified state (uses all derived atoms)
+- `useGameState()` - Access game state (players, current player)
+- `useBoardState()` - Access board state (military, tokens)
+- `useSetupState()` - Access setup state (step history, pending actions)
+- `useGameDispatch()` - Unified dispatch function (routes to appropriate atoms)
 - `useSetupFlow()` - High-level setup action dispatcher
 
 #### Engine Modules (Pure Business Logic)
@@ -125,12 +132,12 @@ All game logic separated into pure, testable functions:
 
 #### Architecture Pattern
 ```
-UI Components → Hooks → Unified Store → Slices → Engine Modules
+UI Components → Hooks → Jotai Atoms (Atomic State) → Engine Modules
 ```
-- UI components use hooks to access state and dispatch actions
+- UI components use hooks to read atoms (useAtomValue) and write atoms (useSetAtom)
+- Atomic state enables fine-grained re-renders - only components using changed atoms re-render
+- Action atoms encapsulate complex state updates and call engine modules
 - Hooks provide clean API (e.g., `useSetupFlow()` for setup actions)
-- Unified store routes actions to appropriate slices (by prefix: `game/`, `board/`, `setup/`)
-- Slices manage state updates using Immer
 - Engine modules provide pure business logic functions
 
 ### Routing
@@ -155,22 +162,25 @@ Always use these aliases instead of relative imports.
 
 ### State Updates
 
-- Always use Immer's `produce()` for state updates in reducers
-- Never mutate state directly
-- Keep reducer logic pure and side-effect free
+- State is managed through Jotai atoms - immutable by default
+- Use `useSetAtom()` to get setter functions for atoms
+- Use `useAtomValue()` to read atom values (subscribes to changes)
+- Use `useAtom()` when you need both read and write access
+- For complex updates, use write-only action atoms (e.g., `dispatchSetupActionAtom`)
+- Never mutate state directly - always create new objects/arrays
 
 ### Setup Flow
 
-The game setup is a multi-step process managed through the unified setup slice:
+The game setup is a multi-step process managed through Jotai atoms:
 1. Board Setup (coins, conflict pawn, tokens)
 2. Wonder selection
 3. Deck preparation
 4. Age setup
 
 Setup actions are dispatched through `useSetupFlow()` hook, which:
-- Dispatches game/board actions to initialize state
-- Tracks pending actions in setup state
-- Marks actions complete when executed
+- Uses `dispatchSetupActionAtom` to update game/board atoms atomically
+- Tracks pending actions in `pendingActionsAtom`
+- Marks actions complete when executed using `completeSetupActionAtom`
 
 Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_tokens`, `place_progress_tokens`, `setup_wonders`, `setup_decks`, `setup_ages`
 
@@ -200,13 +210,8 @@ Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_t
 ### Core Architecture
 - `app/game/types.ts` - Domain type definitions (board, tokens, game entities)
 - `app/game/state/types.ts` - State and action type definitions
-- `app/game/state/store.reducer.ts` - Root reducer combining all slices
-- `app/game/state/GameStoreProvider.tsx` - Unified state provider
-
-### State Slices
-- `app/game/state/slices/game.slice.ts` - Player state management
-- `app/game/state/slices/board.slice.ts` - Board state management
-- `app/game/state/slices/setup.slice.ts` - Setup flow management
+- `app/game/state/atoms.ts` - Jotai atoms (primitive, derived, and action atoms)
+- `app/game/state/GameStoreProvider.tsx` - Jotai Provider wrapper
 
 ### Engine Modules (Business Logic)
 - `app/game/engine/constants.ts` - All game constants and configurations

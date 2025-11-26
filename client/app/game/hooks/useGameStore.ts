@@ -1,5 +1,9 @@
-import { useContext } from 'react';
-import { GameStoreContext } from '~/game/state/store.context';
+import { useAtomValue } from 'jotai';
+import {
+  gameStateAtom,
+  boardStateAtom,
+  setupStateAtom,
+} from '~/game/state/atoms';
 import type {
   GameStoreState,
   GameState,
@@ -10,9 +14,14 @@ import type {
 /**
  * Access the complete unified game store
  * Use slice-specific selectors below for targeted access
+ * Updated to use Jotai atoms
  */
 export default function useGameStore(): GameStoreState {
-  return useContext(GameStoreContext);
+  const game = useAtomValue(gameStateAtom);
+  const board = useAtomValue(boardStateAtom);
+  const setup = useAtomValue(setupStateAtom);
+
+  return { game, board, setup };
 }
 
 /**
@@ -21,8 +30,7 @@ export default function useGameStore(): GameStoreState {
  * Maintains backward-compatible API
  */
 export function useGameState(): GameState {
-  const store = useGameStore();
-  return store.game;
+  return useAtomValue(gameStateAtom);
 }
 
 /**
@@ -31,8 +39,7 @@ export function useGameState(): GameState {
  * Maintains backward-compatible API
  */
 export function useBoardState(): BoardState {
-  const store = useGameStore();
-  return store.board;
+  return useAtomValue(boardStateAtom);
 }
 
 /**
@@ -40,6 +47,5 @@ export function useBoardState(): BoardState {
  * NEW - provides setup state access
  */
 export function useSetupState(): SetupState {
-  const store = useGameStore();
-  return store.setup;
+  return useAtomValue(setupStateAtom);
 }
