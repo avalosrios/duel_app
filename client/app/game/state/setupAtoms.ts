@@ -46,6 +46,8 @@ export const setCurrentSetupStepAtom = atom(
     const currentStep = SetupEngine.getSetupStep(stepName);
     if (currentStep != null) {
       const requiredActions = SetupEngine.getRequiredActions(currentStep);
+      // This works when moving forward, but not backwards (e.g. from 'place_conflict_pawn' to 'setup_coins')
+      // because we need to check if the step is complete before setting the pending actions
       set(pendingActionsAtom, requiredActions);
     }
 

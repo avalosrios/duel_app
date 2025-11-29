@@ -10,7 +10,8 @@ import type { SetupActionType } from '~/game/state/types';
 export default function SetupStepContainer(): React.ReactElement | null {
   // Get the current step from the context
   const currentStep = useGameSetupCurrentStep();
-  const { pendingActions } = useSetupState();
+  const { pendingActions, isComplete, stepHistory } = useSetupState();
+  console.log('setup sate debug', { isComplete, stepHistory });
   const executeSetupAction = useDispatchSetupAction();
 
   const onCompleteAction = (action: SetupActionType) => {
