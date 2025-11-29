@@ -1,7 +1,7 @@
 import React from 'react';
 import useGameSetupCurrentStep from '~/game/hooks/useGameSetupCurrentStep';
 import { useSetupState } from '~/game/hooks/useGameStore';
-import useSetupFlow from '~/game/hooks/useSetupFlow';
+import useDispatchSetupAction from '~/game/hooks/useDispatchSetupAction';
 import SetupStepHeader from '~/game/setup/SetupStepHeader';
 import SetupStep from '~/game/setup/SetupStep';
 import SetupStepContent from '~/game/setup/SetupStepContent';
@@ -11,7 +11,7 @@ export default function SetupStepContainer(): React.ReactElement | null {
   // Get the current step from the context
   const currentStep = useGameSetupCurrentStep();
   const { pendingActions } = useSetupState();
-  const executeSetupAction = useSetupFlow();
+  const executeSetupAction = useDispatchSetupAction();
 
   const onCompleteAction = (action: SetupActionType) => {
     executeSetupAction(action);

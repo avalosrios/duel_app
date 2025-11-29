@@ -2,11 +2,10 @@ import React from 'react';
 import MilitarySquare from '~/game/board/MilitarySquare';
 import MilitaryVictoryPointSquare from '~/game/board/MilitaryVictoryPointSquare';
 import type { IBoardSquare } from '~/game/types';
-import * as BoardEngine from '~/game/engine/board.engine';
+import { useBoardState } from '~/game/hooks/useGameStore';
 
 export default function MilitaryGrid(): React.ReactNode {
-  // Generate board layout using engine module
-  const linearBoard: IBoardSquare[] = BoardEngine.generateBoardLayout();
+  const { boardLayout: linearBoard } = useBoardState();
 
   return (
     <div className='flex flex-row w-full justify-center'>

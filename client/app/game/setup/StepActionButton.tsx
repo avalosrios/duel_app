@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import Button from '~/common/Button';
 import type { SetupActionType } from '~/game/state/types';
 import { toTitleCase } from '~/common/utils';
-import useSetupFlow from '~/game/hooks/useSetupFlow';
+import useSetupFlow from '~/game/hooks/useDispatchSetupAction';
 
 interface SetupActionProps {
   action: SetupActionType;

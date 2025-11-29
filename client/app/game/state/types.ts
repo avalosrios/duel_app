@@ -1,4 +1,4 @@
-import type { MilitaryToken, ProgressToken } from '~/game/types';
+import type { IBoardSquare, MilitaryToken, ProgressToken } from '~/game/types';
 
 /**
  * Unified state and action types for the game store
@@ -35,6 +35,7 @@ export interface BoardMilitaryState {
 export interface BoardState {
   militaryContext: BoardMilitaryState;
   progressTokens: ProgressToken[]; // Max 5 progress tokens
+  boardLayout: IBoardSquare[];
 }
 
 // ============================================

@@ -1,16 +1,18 @@
 import { useSetAtom } from 'jotai';
 import {
   setPlayerCoinsAtom,
-  initAllPlayerCoinsAtom,
   setCurrentPlayerAtom,
   setConflictPawnPositionAtom,
-  initMilitaryTokensAtom,
-  initProgressTokensAtom,
-  setCurrentSetupStepAtom,
-  completeSetupActionAtom,
-  markSetupCompleteAtom,
 } from '~/game/state/atoms';
 import type { GameStoreAction } from '~/game/state/types';
+import {
+  completeSetupActionAtom,
+  initAllPlayerCoinsAtom,
+  initMilitaryTokensAtom,
+  initProgressTokensAtom,
+  markSetupCompleteAtom,
+  setCurrentSetupStepAtom,
+} from '~/game/state/setupAtoms';
 
 /**
  * Access the unified dispatch function

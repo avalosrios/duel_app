@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import type { ISetupStep } from '~/game/setup/SetupStep';
 import { useSetupState } from '~/game/hooks/useGameStore';
-import useGameDispatch from '~/game/hooks/useGameDispatch';
 import Flexbox from '~/common/Flexbox';
 import Button from '~/common/Button';
+import useGameSetupDispatch from '~/game/hooks/useGameSetupDispatch';
 
 interface SetupStepHeaderProps {
   step: ISetupStep;
@@ -12,7 +12,7 @@ interface SetupStepHeaderProps {
 
 function useGoBack(): () => void {
   const { stepHistory } = useSetupState();
-  const dispatch = useGameDispatch();
+  const dispatch = useGameSetupDispatch();
 
   return useCallback(() => {
     if (stepHistory.length > 1) {
@@ -31,7 +31,7 @@ export default function SetupStepHeader({
   isNextDisabled = false,
 }: SetupStepHeaderProps): React.ReactElement {
   const { stepHistory } = useSetupState();
-  const dispatch = useGameDispatch();
+  const dispatch = useGameSetupDispatch();
   const goBack = useGoBack();
 
   const isFirstStep = useMemo(() => {

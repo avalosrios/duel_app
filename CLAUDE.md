@@ -223,7 +223,7 @@ Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_t
 ### Hooks
 - `app/game/hooks/useGameStore.ts` - Unified state access with selectors
 - `app/game/hooks/useGameDispatch.ts` - Unified action dispatcher
-- `app/game/hooks/useSetupFlow.ts` - Setup action dispatcher
+- `app/game/hooks/useDispatchSetupAction.ts` - Setup action dispatcher
 
 ## Testing
 
