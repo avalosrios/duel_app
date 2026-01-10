@@ -11,7 +11,6 @@ import { setupStateAtom, stepHistoryAtom } from '~/game/state/setupAtoms';
 /**
  * Access the complete unified game store
  * Use slice-specific selectors below for targeted access
- * Updated to use Jotai atoms
  */
 export const gameStore = createStore();
 gameStore.set(stepHistoryAtom, []);
@@ -29,20 +28,22 @@ export default function useGameStore(): GameStoreState {
  * Maintains backward-compatible API
  */
 export function useGameState(): GameState {
-  return useAtomValue(gameStateAtom);
+  const { game } = useGameStore();
+  return game;
 }
 
 /**
  * Access only board state (military context, progress tokens, board layout)
  */
 export function useBoardState(): BoardState {
-  return useAtomValue(boardStateAtom);
+  const { board } = useGameStore();
+  return board;
 }
 
 /**
  * Access only setup state (step history, pending actions, completion status)
- * NEW - provides setup state access
  */
 export function useSetupState(): SetupState {
-  return useAtomValue(setupStateAtom);
+  const { setup } = useGameStore();
+  return setup;
 }

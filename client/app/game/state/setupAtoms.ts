@@ -22,7 +22,66 @@ export const stepHistoryAtom = atom<string[]>([]);
 /**
  * Pending actions that need to be completed
  */
-export const pendingActionsAtom = atom<SetupActionType[]>([]);
+export const pendingActionsAtom = atom<
+  SetupActionType[],
+  [actions: SetupActionType[]],
+  void
+>(
+  get => {
+    return (
+      get(pendingActionsMapAtom).get(get(currentStepAtom))?.pendingActions ?? []
+    );
+  },
+  (get, set, actions: SetupActionType[]) => {
+    const currentStep = get(currentStepAtom);
+    set(pendingActionsMapAtom, prev => {
+      const pending = prev.get(currentStep)?.pendingActions;
+      const completed: SetupActionType[] =
+        prev.get(currentStep)?.completedActions ?? [];
+      if (
+        pending != null &&
+        pending.length > 0 &&
+        actions.length < pending.length
+      ) {
+        // find the missing actions and mark them as completed
+        const missing = pending.filter(action => !actions.includes(action));
+        completed.push(...missing);
+      }
+
+      // Check if we have completed all the actions that we are trying to set
+      const hasAllActionsCompleted =
+        completed.length > 0 &&
+        completed.every(action => actions.includes(action));
+
+      if (hasAllActionsCompleted) {
+        return new Map(prev).set(currentStep, {
+          pendingActions: [],
+          completedActions: completed,
+        });
+      }
+
+      return new Map(prev).set(currentStep, {
+        pendingActions: actions,
+        completedActions: completed,
+      });
+    });
+  }
+);
+
+interface IPendingActionsValue {
+  pendingActions: SetupActionType[];
+  completedActions: SetupActionType[];
+}
+/**
+ * Map of pending actions grouped by step name
+ */
+// TODO: Figure out if we can use this approach instead
+// 1) Init the map with all the names of the steps
+// 2) Directly set the values to the pendingActionsAtom
+// https://jotai.org/docs/guides/atoms-in-atom#storing-a-map-of-atom-configs-in-atom
+export const pendingActionsMapAtom = atom<Map<string, IPendingActionsValue>>(
+  new Map<string, IPendingActionsValue>()
+);
 
 // ============================================
 // SETUP ACTION ATOMS (write-only)
@@ -52,6 +111,7 @@ export const setCurrentSetupStepAtom = atom(
     }
 
     // Check if setup is complete
+    // TODO: Also make sure that there are no pending actions left in the pendingActionsMap
     const isComplete = SetupEngine.isSetupComplete(newHistory);
     set(isSetupCompleteAtom, isComplete);
   }
@@ -74,6 +134,11 @@ export const initAllPlayerCoinsAtom = atom(null, (get, set, coins: number) => {
     playersAtom,
     players.map(player => ({ ...player, coins }))
   );
+});
+
+export const currentStepAtom = atom(get => {
+  const stepHistory = get(stepHistoryAtom);
+  return stepHistory[stepHistory.length - 1];
 });
 
 /**
