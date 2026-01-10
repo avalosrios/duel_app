@@ -38,8 +38,17 @@ services:
   # We also expose port 80 to connect to the proxy from the host machine.
   ###################################################
   proxy:
-    image: traefik:v3.4
-    command: --providers.docker
+    image: traefik:v3.6.2
+    container_name: "traefik-proxy"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.network=duel_network"
+      - "--entryPoints.web.address=:80"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - duel_network
     ports:
       - 80:80
     volumes:
@@ -116,6 +125,8 @@ services:
           action: rebuild
 #        - path: ./client/*.config.ts
 #          action: rebuild
+    networks:
+      - duel_network
     labels:
       traefik.http.routers.client.rule: Host(`localhost`)
       traefik.http.services.client.loadbalancer.server.port: 5173
@@ -159,3 +170,7 @@ services:
 ###################################################
 #volumes:
 #  todo-mysql-data:
+
+networks:
+  duel_network:
+    name: duel_network

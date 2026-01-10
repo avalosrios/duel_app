@@ -1,12 +1,11 @@
-import { useGameDispatch } from '~/game/state/game.reducer';
-
-const INITIAL_COINS = 7;
+import useGameDispatch from '~/game/hooks/useGameDispatch';
+import { GAME_CONFIG } from '~/game/engine/constants';
 
 export default function useGameSetupPlayerCoins(): () => void {
   const dispatch = useGameDispatch();
   return () =>
     dispatch({
-      type: 'INIT_ALL_PLAYER_COINS',
-      payload: { coins: INITIAL_COINS },
+      type: 'game/INIT_ALL_PLAYER_COINS',
+      payload: { coins: GAME_CONFIG.INITIAL_COINS },
     });
 }

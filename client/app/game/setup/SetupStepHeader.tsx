@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import type { ISetupStep } from '~/game/setup/SetupStep';
-import { useSetupContext } from '~/game/state/setup.context';
+import { useSetupState } from '~/game/hooks/useGameStore';
 import Flexbox from '~/common/Flexbox';
 import Button from '~/common/Button';
+import useGameSetupDispatch from '~/game/hooks/useGameSetupDispatch';
 
 interface SetupStepHeaderProps {
   step: ISetupStep;
@@ -10,33 +11,45 @@ interface SetupStepHeaderProps {
 }
 
 function useGoBack(): () => void {
-  const { setCurrentStep, stepHistory } = useSetupContext();
-  return () => {
+  const { stepHistory } = useSetupState();
+  const dispatch = useGameSetupDispatch();
+
+  return useCallback(() => {
     if (stepHistory.length > 1) {
       // Go back to the previous step
       const previousStepName = stepHistory[stepHistory.length - 2];
-      setCurrentStep(previousStepName);
+      dispatch({
+        type: 'setup/SET_CURRENT_STEP',
+        payload: { step: previousStepName },
+      });
     }
-  };
+  }, [dispatch, stepHistory]);
 }
 
 export default function SetupStepHeader({
   step,
   isNextDisabled = false,
 }: SetupStepHeaderProps): React.ReactElement {
-  const { setCurrentStep, stepHistory } = useSetupContext();
+  const { stepHistory } = useSetupState();
+  const dispatch = useGameSetupDispatch();
   const goBack = useGoBack();
+
   const isFirstStep = useMemo(() => {
     const index = stepHistory.indexOf(step.name);
     return index === 0;
   }, [step.name, stepHistory]);
+
   const hasNextStep = step.next != null;
+
   const handleNextStep = useCallback(() => {
     const nextStep = step.next;
     if (nextStep != null) {
-      setCurrentStep(nextStep);
+      dispatch({
+        type: 'setup/SET_CURRENT_STEP',
+        payload: { step: nextStep },
+      });
     }
-  }, [step.next, setCurrentStep]);
+  }, [step.next, dispatch]);
   return (
     <Flexbox direction='row' justify='between' className={['mb-4', 'grow']}>
       <Flexbox direction='column'>

@@ -1,6 +1,7 @@
 import React from 'react';
-import useGameState from '~/game/hooks/useGameState';
+import { useGameState } from '~/game/hooks/useGameStore';
 import Flexbox from '~/common/Flexbox';
+import type { Player } from '~/game/state/types';
 
 export default function GameStateDebug(): React.ReactNode {
   const { currentPlayer, players } = useGameState();
@@ -14,7 +15,7 @@ export default function GameStateDebug(): React.ReactNode {
           Current Player: {currentPlayer?.name ?? 'None'}
         </Flexbox>
         <Flexbox direction='column'>
-          Players: {players.map(player => player.name).join(', ')}
+          Players: {players.map((player: Player) => player.name).join(', ')}
         </Flexbox>
       </Flexbox>
     </div>

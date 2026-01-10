@@ -1,43 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import useGameSetupCurrentStep from '~/game/hooks/useGameSetupCurrentStep';
+import useDispatchSetupAction from '~/game/hooks/useDispatchSetupAction';
 import SetupStepHeader from '~/game/setup/SetupStepHeader';
-import SetupStep, { type SetupAction } from '~/game/setup/SetupStep';
+import SetupStep from '~/game/setup/SetupStep';
 import SetupStepContent from '~/game/setup/SetupStepContent';
+import type { SetupActionType } from '~/game/state/types';
+import { useSetupState } from '~/game/hooks/useGameStore';
 
 export default function SetupStepContainer(): React.ReactElement | null {
-  // get the current step from the context
+  // Get the current step from the context
   const currentStep = useGameSetupCurrentStep();
-  const substeps = useMemo(
-    () => currentStep?.substeps ?? [],
-    [currentStep?.substeps]
-  );
+  const { pendingActions } = useSetupState();
+  const executeSetupAction = useDispatchSetupAction();
 
-  const [stepPendingActions, setStepPendingActions] = useState<SetupAction[]>(
-    []
-  );
-
-  const onCompleteAction = useCallback((action: SetupAction) => {
-    setStepPendingActions(prevActions =>
-      prevActions.filter(prevAction => prevAction !== action)
-    );
-  }, []);
-
-  // TODO: This should be a reducer and stored in a context provider
-  useEffect(() => {
-    if (currentStep == null) {
-      return;
-    }
-    const required = [currentStep.action]
-      .concat(substeps.map(substep => substep.action))
-      .filter(res => res != null);
-    setStepPendingActions(required as SetupAction[]);
-  }, [currentStep, substeps]);
+  const onCompleteAction = (action: SetupActionType) => {
+    executeSetupAction(action);
+  };
 
   if (currentStep == null) {
     return null;
   }
 
-  const hasPendingActions = stepPendingActions.length > 0;
+  const hasPendingActions = pendingActions.length > 0;
   return (
     <>
       <SetupStepHeader step={currentStep} isNextDisabled={hasPendingActions} />

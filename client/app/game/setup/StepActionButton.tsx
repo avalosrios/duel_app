@@ -1,22 +1,31 @@
 import React, { useCallback } from 'react';
 import Button from '~/common/Button';
-import type { SetupAction } from '~/game/setup/SetupStep';
+import type { SetupActionType } from '~/game/state/types';
 import { toTitleCase } from '~/common/utils';
-import useGameDispatchSetup from '~/game/hooks/useGameDispatchSetup';
+import useDispatchSetupAction from '~/game/hooks/useDispatchSetupAction';
+import { useSetupState } from '~/game/hooks/useGameStore';
 
 interface SetupActionProps {
-  action: SetupAction;
+  action: SetupActionType;
   onComplete?: () => void;
 }
 export default function StepActionButton({
   action,
   onComplete,
 }: SetupActionProps): React.ReactNode {
-  const setupDispatch = useGameDispatchSetup();
+  // Check from state if the step has an action to perform
+  const { pendingActions } = useSetupState();
+  const isPending = pendingActions.find(
+    pendingAction => pendingAction === action
+  );
+  const executeSetupAction = useDispatchSetupAction();
   const handleDispatchAction = useCallback(() => {
-    setupDispatch(action);
+    executeSetupAction(action);
     onComplete?.();
-  }, [action, onComplete, setupDispatch]);
+  }, [action, onComplete, executeSetupAction]);
+  if (!isPending) {
+    return <Button size='compact' label='DONE' isDisabled={true} />;
+  }
   return (
     <Button
       size='compact'

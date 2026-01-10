@@ -2,7 +2,7 @@ import React from 'react';
 import Flexbox from '~/common/Flexbox';
 import stylePadding from '~/common/stylePadding';
 import type { TokenBoardSpace } from '~/game/types';
-import useBoardState from '~/game/hooks/useBoardState';
+import { useBoardState } from '~/game/hooks/useGameStore';
 
 const PROGRESS_TOKEN_COUNT = 5;
 const BOARD_BASE: TokenBoardSpace[] = Array<TokenBoardSpace>(
