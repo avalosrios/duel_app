@@ -1,5 +1,5 @@
 import useGameDispatch from '~/game/hooks/useGameDispatch';
-import { GAME_CONFIG } from '~/game/engine/constants';
+import { GAME_CONFIG } from '~/game/engine/constants/config';
 
 export default function useGameSetupPlayerCoins(): () => void {
   const dispatch = useGameDispatch();

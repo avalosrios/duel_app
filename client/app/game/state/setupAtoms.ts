@@ -7,7 +7,7 @@ import {
   setConflictPawnPositionAtom,
 } from '~/game/state/atoms';
 import type { SetupActionType, SetupState } from '~/game/state/types';
-import { GAME_CONFIG } from '~/game/engine/constants';
+import { GAME_CONFIG } from '~/game/engine/constants/config';
 import * as SetupEngine from '~/game/engine/setup.engine';
 
 // ============================================

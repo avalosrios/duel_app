@@ -4,7 +4,8 @@ import type {
   ProgressToken,
   VictoryPoints,
 } from '~/game/types';
-import { GAME_CONFIG, MILITARY_TOKENS, PROGRESS_TOKENS } from './constants';
+import { GAME_CONFIG } from '~/game/engine/constants/config';
+import { MILITARY_TOKENS, PROGRESS_TOKENS } from './constants/tokens';
 
 /**
  * Shuffles an array of tokens using Fisher-Yates algorithm
