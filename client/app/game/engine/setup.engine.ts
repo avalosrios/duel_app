@@ -1,6 +1,6 @@
 import type { ISetupStep } from '~/game/setup/SetupStep';
 import type { SetupActionType } from '~/game/state/types';
-import { SETUP_STEPS } from './constants';
+import { SETUP_STEPS } from './constants/steps';
 
 /**
  * Gets a setup step by name

@@ -1,4 +1,4 @@
-import { GAME_CONFIG } from './constants';
+import { GAME_CONFIG } from '~/game/engine/constants/config';
 
 /**
  * Moves the conflict pawn based on shield delta
