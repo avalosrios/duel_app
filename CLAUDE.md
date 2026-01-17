@@ -1,4 +1,4 @@
-# CLAUDE.md
+1# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -77,7 +77,8 @@ client/
 │   │   ├── setup/               # Setup phase UI components
 │   │   └── state/               # Atomic state management (Jotai)
 │   │       ├── types.ts         # All state & action types
-│   │       ├── atoms.ts         # Jotai atoms & write-only actions
+│   │       ├── atoms.ts         # Game & board Jotai atoms
+│   │       ├── setupAtoms.ts    # Setup-specific Jotai atoms
 │   │       └── GameStoreProvider.tsx # Jotai provider wrapper
 │   ├── routes/                   # Route components
 │   └── routes.ts                 # Route configuration
@@ -89,38 +90,56 @@ client/
 
 The application uses **Jotai** for atomic state management with clean separation between business logic and UI:
 
-#### Atomic State (`state/atoms.ts`)
-All state is managed through fine-grained Jotai atoms for optimal performance:
+#### Atomic State
+All state is managed through fine-grained Jotai atoms for optimal performance, split across two files:
 
-**Primitive Atoms (Base State)**
+**Game & Board Atoms (`state/atoms.ts`)**
+
+*Primitive Atoms (Base State)*
 - `playersAtom` - Array of 2 players with coins
 - `currentPlayerIdAtom` - ID of the active player
 - `conflictPawnPositionAtom` - Conflict pawn position (-9 to 9)
 - `militaryTokensAtom` - Military tokens at start/end positions
 - `progressTokensAtom` - Progress tokens (max 5)
-- `stepHistoryAtom` - Setup step navigation history
-- `pendingActionsAtom` - Setup actions waiting to be completed
-- `isSetupCompleteAtom` - Setup completion status
+- `boardLayoutAtom` - Board layout with 9 squares
 
-**Derived Atoms (Computed State)**
+*Derived Atoms (Computed State)*
 - `currentPlayerAtom` - Computed from playersAtom + currentPlayerIdAtom
 - `gameStateAtom` - Full game state (for compatibility)
 - `boardStateAtom` - Full board state (for compatibility)
+
+*Action Atoms (Write-Only)*
+- `setPlayerCoinsAtom`, `setCurrentPlayerAtom` - Game actions
+- `setConflictPawnPositionAtom` - Board actions
+
+**Setup Atoms (`state/setupAtoms.ts`)**
+
+*Primitive Atoms (Base State)*
+- `stepHistoryAtom` - Setup step navigation history (stack of step names)
+- `pendingActionsMapAtom` - Map of pending actions grouped by step name
+- `isSetupCompleteAtom` - Setup completion status
+
+*Derived Atoms (Computed State)*
+- `currentStepAtom` - Current step name (last item in stepHistory)
+- `pendingActionsAtom` - Pending actions for current step (read/write from map)
 - `setupStateAtom` - Full setup state (for compatibility)
 
-**Action Atoms (Write-Only)**
-- `setPlayerCoinsAtom`, `initAllPlayerCoinsAtom`, `setCurrentPlayerAtom` - Game actions
-- `setConflictPawnPositionAtom`, `initMilitaryTokensAtom`, `initProgressTokensAtom` - Board actions
-- `setCurrentSetupStepAtom`, `completeSetupActionAtom`, `markSetupCompleteAtom` - Setup actions
-- `dispatchSetupActionAtom` - Composite setup action dispatcher
+*Action Atoms (Write-Only)*
+- `setCurrentSetupStepAtom` - Navigate to a setup step
+- `completeSetupActionAtom` - Mark a specific action as complete
+- `markSetupCompleteAtom` - Mark entire setup as complete
+- `initMilitaryTokensAtom` - Initialize military tokens
+- `initAllPlayerCoinsAtom` - Set coins for all players
+- `initProgressTokensAtom` - Initialize progress tokens
+- `dispatchSetupActionAtom` - Composite action dispatcher for all setup actions
 
 #### State Access Hooks
-- `useGameStore()` - Access complete unified state (uses all derived atoms)
-- `useGameState()` - Access game state (players, current player)
-- `useBoardState()` - Access board state (military, tokens)
-- `useSetupState()` - Access setup state (step history, pending actions)
-- `useGameDispatch()` - Unified dispatch function (routes to appropriate atoms)
-- `useSetupFlow()` - High-level setup action dispatcher
+- `useGameStore()` - Access complete unified state (game, board, setup slices)
+- `useGameState()` - Access game state only (players, current player)
+- `useBoardState()` - Access board state only (military, tokens, layout)
+- `useSetupState()` - Access setup state only (step history, pending actions)
+- `useGameDispatch()` - Unified dispatch function (Redux-style action dispatcher for backward compatibility)
+- `useDispatchSetupAction()` - Direct dispatch to `dispatchSetupActionAtom` (preferred for setup actions)
 
 #### Engine Modules (Pure Business Logic)
 All game logic separated into pure, testable functions:
@@ -137,7 +156,7 @@ UI Components → Hooks → Jotai Atoms (Atomic State) → Engine Modules
 - UI components use hooks to read atoms (useAtomValue) and write atoms (useSetAtom)
 - Atomic state enables fine-grained re-renders - only components using changed atoms re-render
 - Action atoms encapsulate complex state updates and call engine modules
-- Hooks provide clean API (e.g., `useSetupFlow()` for setup actions)
+- Hooks provide clean API (e.g., `useDispatchSetupAction()` for setup actions)
 - Engine modules provide pure business logic functions
 
 ### Routing
@@ -177,10 +196,17 @@ The game setup is a multi-step process managed through Jotai atoms:
 3. Deck preparation
 4. Age setup
 
-Setup actions are dispatched through `useSetupFlow()` hook, which:
-- Uses `dispatchSetupActionAtom` to update game/board atoms atomically
-- Tracks pending actions in `pendingActionsAtom`
+Setup actions are dispatched through `useDispatchSetupAction()` hook, which:
+- Calls `dispatchSetupActionAtom` to update game/board atoms atomically
+- Tracks pending actions per-step in `pendingActionsMapAtom`
 - Marks actions complete when executed using `completeSetupActionAtom`
+- When navigating steps via `setCurrentSetupStepAtom`, automatically calculates required actions
+
+**Per-Step Action Tracking:**
+- Each step stores its own pending and completed actions in `pendingActionsMapAtom`
+- `pendingActionsAtom` is a derived read/write atom that accesses the current step's actions
+- Completing an action removes it from the pending list for that step
+- Moving between steps preserves action state for each step
 
 Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_tokens`, `place_progress_tokens`, `setup_wonders`, `setup_decks`, `setup_ages`
 
@@ -210,7 +236,8 @@ Available setup actions: `setup_coins`, `place_conflict_pawn`, `place_military_t
 ### Core Architecture
 - `app/game/types.ts` - Domain type definitions (board, tokens, game entities)
 - `app/game/state/types.ts` - State and action type definitions
-- `app/game/state/atoms.ts` - Jotai atoms (primitive, derived, and action atoms)
+- `app/game/state/atoms.ts` - Game & board Jotai atoms (players, military, tokens)
+- `app/game/state/setupAtoms.ts` - Setup-specific Jotai atoms (step history, pending actions)
 - `app/game/state/GameStoreProvider.tsx` - Jotai Provider wrapper
 
 ### Engine Modules (Business Logic)
