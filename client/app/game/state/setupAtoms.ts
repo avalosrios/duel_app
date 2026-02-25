@@ -221,6 +221,9 @@ export const dispatchSetupActionAtom = atom(
         set(completeSetupActionAtom, action);
         break;
 
+      case 'wonders_draft_1':
+      case 'wonders_draft_2':
+      // TODO: Implement draft actions
       case 'setup_wonders':
       case 'setup_decks':
       case 'setup_ages':

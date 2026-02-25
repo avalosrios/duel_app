@@ -6,6 +6,7 @@ import type {
 } from '~/game/types';
 import { GAME_CONFIG } from '~/game/engine/constants/config';
 import { MILITARY_TOKENS, PROGRESS_TOKENS } from './constants/tokens';
+import { selectNShuffled, shuffle } from '~/game/engine/common';
 
 /**
  * Shuffles an array of tokens using Fisher-Yates algorithm
@@ -15,13 +16,7 @@ import { MILITARY_TOKENS, PROGRESS_TOKENS } from './constants/tokens';
  * @returns New array with shuffled tokens
  */
 export function shuffleTokens<T extends IBoardToken>(tokens: T[]): T[] {
-  const shuffled = [...tokens];
-  for (let i = 0; i < shuffled.length; i++) {
-    const randomPos = Math.floor(Math.random() * tokens.length);
-    // Swap tokens using array destructuring
-    [shuffled[i], shuffled[randomPos]] = [shuffled[randomPos], shuffled[i]];
-  }
-  return shuffled;
+  return shuffle(tokens);
 }
 
 /**
@@ -35,8 +30,7 @@ export function selectRandomTokens<T extends IBoardToken>(
   tokens: T[],
   count: number
 ): T[] {
-  const shuffled = shuffleTokens(tokens);
-  return shuffled.slice(0, count);
+  return selectNShuffled(tokens, count);
 }
 
 /**

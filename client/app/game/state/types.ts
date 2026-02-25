@@ -1,9 +1,24 @@
-import type { IBoardSquare, MilitaryToken, ProgressToken } from '~/game/types';
+import type {
+  IBoardSquare,
+  MilitaryToken,
+  ProgressToken,
+  Wonder,
+} from '~/game/types';
 
 /**
  * Unified state and action types for the game store
  * Consolidates types from game.context.ts, board.context.ts, and setup.context.ts
  */
+
+// ============================================
+// PLAYER DECK TYPE
+// ============================================
+
+export interface Deck {
+  // Things that the player owns in their deck
+  wonders: Wonder[];
+  // potentially also the cards they pick as the game progresses
+}
 
 // ============================================
 // PLAYER & GAME STATE TYPES
@@ -13,11 +28,13 @@ export interface Player {
   playerID: number;
   name?: string;
   coins: number;
+  deck: Deck;
 }
 
 export interface GameState {
   players: Player[]; // Max 2 players
   currentPlayer: Player | null;
+  wonders: Wonder[];
 }
 
 // ============================================
@@ -49,7 +66,9 @@ export type SetupActionType =
   | 'place_progress_tokens'
   | 'setup_wonders'
   | 'setup_decks'
-  | 'setup_ages';
+  | 'setup_ages'
+  | 'wonders_draft_1'
+  | 'wonders_draft_2';
 
 export interface SetupState {
   stepHistory: string[]; // Stack of visited step names
@@ -110,7 +129,11 @@ export type SetupAction =
       type: 'setup/COMPLETE_ACTION';
       payload: { action: SetupActionType };
     }
-  | { type: 'setup/MARK_COMPLETE' };
+  | { type: 'setup/MARK_COMPLETE' }
+  | {
+      type: 'setup/SET_PLAYER_WONDERS';
+      payload: { playerID: number; wonders: Wonder[] };
+    };
 
 // ============================================
 // UNIFIED ACTION TYPE

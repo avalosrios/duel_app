@@ -111,3 +111,9 @@ export type WonderEffect =
 /**
  * ---- END OF EFFECT INTERFACES ----
  */
+
+export interface Wonder {
+  id: string;
+  name: string;
+  effects: WonderEffect[];
+}

@@ -49,10 +49,12 @@ export const SETUP_STEPS: {
           name: 'Wonder Drafting: Round 1',
           description:
             'Player 1 drafts 1 Wonder. Player 2 drafts 2 Wonders. Player 1 picks the remaining Wonder.',
+          action: 'wonders_draft_1',
           next: 'Wonder Drafting: Round 2',
         },
         {
           name: 'Wonder Drafting: Round 2',
+          action: 'wonders_draft_2',
           description:
             'Player 2 drafts 1 Wonder. Player 1 drafts 2 Wonders. Player 2 picks the remaining Wonder.',
         },

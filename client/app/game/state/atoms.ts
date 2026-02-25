@@ -1,7 +1,13 @@
 import { atom } from 'jotai';
 import type { Player, GameState, BoardState } from './types';
-import type { IBoardSquare, MilitaryToken, ProgressToken } from '~/game/types';
+import type {
+  IBoardSquare,
+  MilitaryToken,
+  ProgressToken,
+  Wonder,
+} from '~/game/types';
 import * as BoardEngine from '~/game/engine/board.engine';
+import { initGameWonders } from '~/game/engine/wonders.engine';
 
 /**
  * Jotai atoms for game state management
@@ -16,6 +22,9 @@ function getInitialPlayer(id: number): Player {
     playerID: id,
     coins: 0,
     name: `Player ${id}`,
+    deck: {
+      wonders: [],
+    },
   };
 }
 
@@ -30,6 +39,11 @@ export const playersAtom = atom<Player[]>([
   getInitialPlayer(1),
   getInitialPlayer(2),
 ]);
+
+/**
+ * Wonders to be played in the game instance (max 8)
+ */
+export const wondersAtom = atom<Wonder[]>(initGameWonders());
 
 /**
  * Current player - derived from players array based on playerID
@@ -53,6 +67,7 @@ export const gameStateAtom = atom<GameState>(
     ({
       players: get(playersAtom),
       currentPlayer: get(currentPlayerAtom),
+      wonders: get(wondersAtom),
     }) as GameState
 );
 
@@ -74,6 +89,30 @@ export const setPlayerCoinsAtom = atom(
           ? { ...player, coins: payload.coins }
           : player
       )
+    );
+  }
+);
+
+/**
+ * Sets the wonders for a specific player's deck'
+ */
+export const setPlayerDeckWondersAtom = atom(
+  null,
+  (get, set, payload: { playerID: number; wonders: Wonder[] }) => {
+    const players = get(playersAtom);
+    set(
+      playersAtom,
+      players.map(player => {
+        // we need to calculate update the deck with the new wonders
+        if (player.playerID === payload.playerID) {
+          const { wonders: deckWonders } = player.deck;
+          // TODO: We should probably use immer here, this looks ugly
+          const wonders = { ...deckWonders, ...payload.wonders };
+          return { ...player, deck: { ...player.deck, wonders } };
+        }
+        // No changes
+        return player;
+      })
     );
   }
 );
