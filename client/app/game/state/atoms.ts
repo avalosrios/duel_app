@@ -103,14 +103,11 @@ export const setPlayerDeckWondersAtom = atom(
     set(
       playersAtom,
       players.map(player => {
-        // we need to calculate update the deck with the new wonders
         if (player.playerID === payload.playerID) {
           const { wonders: deckWonders } = player.deck;
-          // TODO: We should probably use immer here, this looks ugly
-          const wonders = { ...deckWonders, ...payload.wonders };
+          const wonders = [...deckWonders, ...payload.wonders];
           return { ...player, deck: { ...player.deck, wonders } };
         }
-        // No changes
         return player;
       })
     );

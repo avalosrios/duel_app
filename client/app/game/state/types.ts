@@ -77,6 +77,28 @@ export interface SetupState {
 }
 
 // ============================================
+// DRAFT STATE TYPES
+// ============================================
+
+export interface DraftPickEntry {
+  wonder: Wonder;
+  pickedBy: number | null; // playerID, or null if not yet picked
+}
+
+export interface DraftState {
+  // The 4 wonders currently visible on the table for picking
+  visibleWonders: DraftPickEntry[];
+  // The remaining 4 wonders held for round 2
+  remainingWonders: Wonder[];
+  // Ordered list of playerIDs for picks this round, e.g. [1, 2, 2, 1]
+  pickOrder: number[];
+  // How many picks have been made so far this round
+  pickIndex: number;
+  // Which draft round is currently active (null = not yet started)
+  activeRound: 1 | 2 | null;
+}
+
+// ============================================
 // UNIFIED GAME STORE STATE
 // ============================================
 
@@ -84,6 +106,7 @@ export interface GameStoreState {
   game: GameState;
   board: BoardState;
   setup: SetupState;
+  draft: DraftState;
 }
 
 // ============================================

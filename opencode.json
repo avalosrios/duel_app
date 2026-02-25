@@ -32,5 +32,34 @@
         "bash": false
       }
     }
+  },
+  "provider": {
+    "copilot": {
+      "models": {
+        "github-copilot/claude-haiku-4.5": {
+          "options": {
+            "reasoningEffort": "high",
+            "textVerbosity": "verbose",
+            "reasoningSummary": "auto"
+          },
+          "limit": {
+            "context": 30000,
+            "output": 100000
+          }
+        }
+      }
+    },
+    "anthropic": {
+      "models": {
+        "anthropic/claude-sonnet-4-6": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 30000
+            }
+          }
+        }
+      }
+    }
   }
 }

@@ -9,6 +9,10 @@ import {
 import type { SetupActionType, SetupState } from '~/game/state/types';
 import { GAME_CONFIG } from '~/game/engine/constants/config';
 import * as SetupEngine from '~/game/engine/setup.engine';
+import {
+  initDraftRound1Atom,
+  initDraftRound2Atom,
+} from '~/game/state/draftAtoms';
 
 // ============================================
 // SETUP STATE ATOMS
@@ -222,8 +226,15 @@ export const dispatchSetupActionAtom = atom(
         break;
 
       case 'wonders_draft_1':
+        // Initialize the draft round — completion is deferred until all 4 picks are made
+        set(initDraftRound1Atom);
+        break;
+
       case 'wonders_draft_2':
-      // TODO: Implement draft actions
+        // Initialize the draft round — completion is deferred until all 4 picks are made
+        set(initDraftRound2Atom);
+        break;
+
       case 'setup_wonders':
       case 'setup_decks':
       case 'setup_ages':
