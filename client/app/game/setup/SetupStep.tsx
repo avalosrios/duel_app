@@ -4,12 +4,16 @@ import stylePadding from '~/common/stylePadding';
 import SetupStepContent from '~/game/setup/SetupStepContent';
 import type { SetupActionType } from '~/game/state/types';
 
+export type SetupStepComponent = 'wonder_draft';
+
 export interface ISetupStep {
   name: string;
   description: string;
   next?: string; // Name of the next step
   action?: SetupActionType; // This should be a dispatcher action
   substeps?: ISetupStep[];
+  // Optional custom component to render instead of default SetupStepContent
+  component?: SetupStepComponent;
 }
 
 interface Props {
@@ -41,7 +45,7 @@ export default function SetupStep({
           gap='4'
           className={stylePadding.all['4']}
         >
-          <SetupStep step={substep} />
+          <SetupStep step={substep} onCompleteAction={onCompleteAction} />
         </Flexbox>
       ))}
     </Flexbox>

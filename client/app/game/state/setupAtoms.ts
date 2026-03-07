@@ -9,6 +9,10 @@ import {
 import type { SetupActionType, SetupState } from '~/game/state/types';
 import { GAME_CONFIG } from '~/game/engine/constants/config';
 import * as SetupEngine from '~/game/engine/setup.engine';
+import {
+  initDraftRound1Atom,
+  initDraftRound2Atom,
+} from '~/game/state/draftAtoms';
 
 // ============================================
 // SETUP STATE ATOMS
@@ -220,6 +224,21 @@ export const dispatchSetupActionAtom = atom(
         set(initProgressTokensAtom);
         set(completeSetupActionAtom, action);
         break;
+
+      case 'wonders_draft_1':
+      case 'wonders_draft_2': {
+        // Only initialize if action is still pending (not yet completed)
+        const pending = get(pendingActionsAtom);
+        if (pending.includes(action)) {
+          const draftAtom =
+            action === 'wonders_draft_1'
+              ? initDraftRound1Atom
+              : initDraftRound2Atom;
+          set(draftAtom);
+        }
+        // If already completed, silently skip initialization
+        break;
+      }
 
       case 'setup_wonders':
       case 'setup_decks':

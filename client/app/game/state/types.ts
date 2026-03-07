@@ -1,9 +1,24 @@
-import type { IBoardSquare, MilitaryToken, ProgressToken } from '~/game/types';
+import type {
+  IBoardSquare,
+  MilitaryToken,
+  ProgressToken,
+  Wonder,
+} from '~/game/types';
 
 /**
  * Unified state and action types for the game store
  * Consolidates types from game.context.ts, board.context.ts, and setup.context.ts
  */
+
+// ============================================
+// PLAYER DECK TYPE
+// ============================================
+
+export interface Deck {
+  // Things that the player owns in their deck
+  wonders: Wonder[];
+  // potentially also the cards they pick as the game progresses
+}
 
 // ============================================
 // PLAYER & GAME STATE TYPES
@@ -13,11 +28,13 @@ export interface Player {
   playerID: number;
   name?: string;
   coins: number;
+  deck: Deck;
 }
 
 export interface GameState {
   players: Player[]; // Max 2 players
   currentPlayer: Player | null;
+  wonders: Wonder[];
 }
 
 // ============================================
@@ -49,12 +66,36 @@ export type SetupActionType =
   | 'place_progress_tokens'
   | 'setup_wonders'
   | 'setup_decks'
-  | 'setup_ages';
+  | 'setup_ages'
+  | 'wonders_draft_1'
+  | 'wonders_draft_2';
 
 export interface SetupState {
   stepHistory: string[]; // Stack of visited step names
   pendingActions: SetupActionType[]; // Actions that need to be completed
   isComplete: boolean; // Whether setup is finished
+}
+
+// ============================================
+// DRAFT STATE TYPES
+// ============================================
+
+export interface DraftPickEntry {
+  wonder: Wonder;
+  pickedBy: number | null; // playerID, or null if not yet picked
+}
+
+export interface DraftState {
+  // The 4 wonders currently visible on the table for picking
+  visibleWonders: DraftPickEntry[];
+  // The remaining 4 wonders held for round 2
+  remainingWonders: Wonder[];
+  // Ordered list of playerIDs for picks this round, e.g. [1, 2, 2, 1]
+  pickOrder: number[];
+  // How many picks have been made so far this round
+  pickIndex: number;
+  // Which draft round is currently active (null = not yet started)
+  activeRound: 1 | 2 | null;
 }
 
 // ============================================
@@ -65,6 +106,7 @@ export interface GameStoreState {
   game: GameState;
   board: BoardState;
   setup: SetupState;
+  draft: DraftState;
 }
 
 // ============================================
@@ -110,7 +152,11 @@ export type SetupAction =
       type: 'setup/COMPLETE_ACTION';
       payload: { action: SetupActionType };
     }
-  | { type: 'setup/MARK_COMPLETE' };
+  | { type: 'setup/MARK_COMPLETE' }
+  | {
+      type: 'setup/SET_PLAYER_WONDERS';
+      payload: { playerID: number; wonders: Wonder[] };
+    };
 
 // ============================================
 // UNIFIED ACTION TYPE

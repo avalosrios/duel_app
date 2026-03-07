@@ -3,6 +3,7 @@ import {
   setPlayerCoinsAtom,
   setCurrentPlayerAtom,
   setConflictPawnPositionAtom,
+  setPlayerDeckWondersAtom,
 } from '~/game/state/atoms';
 import type { GameStoreAction } from '~/game/state/types';
 import {
@@ -18,10 +19,6 @@ import {
  * Access the unified dispatch function
  * Handles all game/, board/, and setup/ actions
  * Updated to use Jotai atoms while maintaining backward-compatible API
- *
- * Replaces:
- * - useGameDispatch (from game.reducer.ts)
- * - useBoardDispatch (from board.reducer.ts)
  */
 export default function useGameDispatch(): (action: GameStoreAction) => void {
   // Get all setter atoms
@@ -34,6 +31,7 @@ export default function useGameDispatch(): (action: GameStoreAction) => void {
   const setCurrentSetupStep = useSetAtom(setCurrentSetupStepAtom);
   const completeSetupAction = useSetAtom(completeSetupActionAtom);
   const markSetupComplete = useSetAtom(markSetupCompleteAtom);
+  const setPlayerWonders = useSetAtom(setPlayerDeckWondersAtom);
 
   // Return a dispatch-like function that routes actions to appropriate atoms
   return (action: GameStoreAction) => {
@@ -70,7 +68,9 @@ export default function useGameDispatch(): (action: GameStoreAction) => void {
       case 'setup/MARK_COMPLETE':
         markSetupComplete();
         break;
-
+      case 'setup/SET_PLAYER_WONDERS':
+        setPlayerWonders(action.payload);
+        break;
       default:
         console.warn('Unknown action type:', action);
     }

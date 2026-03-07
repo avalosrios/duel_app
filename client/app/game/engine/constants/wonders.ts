@@ -1,10 +1,5 @@
-import type { WonderEffect } from '~/game/types';
+import type { Wonder } from '~/game/types';
 
-export interface Wonder {
-  id: string;
-  name: string;
-  effects: WonderEffect[];
-}
 export const WONDERS: Wonder[] = [
   {
     id: 'appian-way',

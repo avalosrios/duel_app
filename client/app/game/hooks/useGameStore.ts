@@ -5,8 +5,10 @@ import type {
   GameState,
   BoardState,
   SetupState,
+  DraftState,
 } from '~/game/state/types';
 import { setupStateAtom, stepHistoryAtom } from '~/game/state/setupAtoms';
+import { draftStateAtom } from '~/game/state/draftAtoms';
 
 /**
  * Access the complete unified game store
@@ -19,7 +21,8 @@ export default function useGameStore(): GameStoreState {
   const game = useAtomValue(gameStateAtom);
   const board = useAtomValue(boardStateAtom);
   const setup = useAtomValue(setupStateAtom);
-  return { game, board, setup };
+  const draft = useAtomValue(draftStateAtom);
+  return { game, board, setup, draft };
 }
 
 /**
@@ -46,4 +49,12 @@ export function useBoardState(): BoardState {
 export function useSetupState(): SetupState {
   const { setup } = useGameStore();
   return setup;
+}
+
+/**
+ * Access only draft state (visible wonders, pick order, pick index)
+ */
+export function useDraftState(): DraftState {
+  const { draft } = useGameStore();
+  return draft;
 }
