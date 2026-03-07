@@ -20,6 +20,7 @@
     "immer": "^11.0.0",
     "isbot": "^5.1.32",
     "jotai": "^2.15.1",
+    "jotai-devtools": "^0.13.0",
     "lodash-es": "^4.17.21",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

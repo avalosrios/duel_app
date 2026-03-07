@@ -8,6 +8,7 @@ import {
   isDraftRoundCompleteAtom,
   pickWonderAtom,
 } from '~/game/state/draftAtoms';
+import { pendingActionsAtom } from '~/game/state/setupAtoms';
 import Flexbox from '~/common/Flexbox';
 import Button from '~/common/Button';
 import WonderCard from '~/game/setup/WonderCard';
@@ -27,8 +28,10 @@ export default function WonderDraftStep({
   const isRoundComplete = useAtomValue(isDraftRoundCompleteAtom)(round);
   const pickWonder = useSetAtom(pickWonderAtom);
   const executeSetupAction = useDispatchSetupAction();
+  const pendingActions = useAtomValue(pendingActionsAtom);
 
   const action = step.action as SetupActionType;
+  const isActionCompleted = !pendingActions.includes(action);
 
   const handleStartDraft = useCallback(() => {
     executeSetupAction(action);
@@ -40,6 +43,17 @@ export default function WonderDraftStep({
     },
     [pickWonder, round]
   );
+
+  // Show completion message if this round's action is already completed
+  if (isActionCompleted) {
+    return (
+      <Flexbox direction='column' gap='4'>
+        <p className='text-sm font-semibold'>
+          ✓ Round {round} is complete and locked
+        </p>
+      </Flexbox>
+    );
+  }
 
   // Show "Start Draft" button until this round is the active one
   if (draftState.activeRound !== round) {
@@ -60,8 +74,7 @@ export default function WonderDraftStep({
         </p>
       ) : (
         <p className='text-sm font-semibold'>
-          Player {currentPicker}&apos;s turn to pick
-          {' '}
+          Player {currentPicker}&apos;s turn to pick{' '}
           <span className='text-gray-500 font-normal'>
             (pick {draftState.pickIndex + 1} of {draftState.pickOrder.length})
           </span>

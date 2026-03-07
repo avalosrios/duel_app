@@ -226,14 +226,19 @@ export const dispatchSetupActionAtom = atom(
         break;
 
       case 'wonders_draft_1':
-        // Initialize the draft round — completion is deferred until all 4 picks are made
-        set(initDraftRound1Atom);
+      case 'wonders_draft_2': {
+        // Only initialize if action is still pending (not yet completed)
+        const pending = get(pendingActionsAtom);
+        if (pending.includes(action)) {
+          const draftAtom =
+            action === 'wonders_draft_1'
+              ? initDraftRound1Atom
+              : initDraftRound2Atom;
+          set(draftAtom);
+        }
+        // If already completed, silently skip initialization
         break;
-
-      case 'wonders_draft_2':
-        // Initialize the draft round — completion is deferred until all 4 picks are made
-        set(initDraftRound2Atom);
-        break;
+      }
 
       case 'setup_wonders':
       case 'setup_decks':
