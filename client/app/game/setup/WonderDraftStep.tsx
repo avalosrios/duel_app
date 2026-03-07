@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import type { ISetupStep } from '~/game/setup/SetupStep';
 import type { SetupActionType } from '~/game/state/types';
@@ -43,6 +43,10 @@ export default function WonderDraftStep({
     },
     [pickWonder, round]
   );
+  const isDisabled = useMemo<boolean>(() => {
+    const isNextRound = (draftState.activeRound ?? 0) + 1 === round;
+    return !isNextRound && draftState.activeRound !== round;
+  }, [draftState.activeRound, round]);
 
   // Show completion message if this round's action is already completed
   if (isActionCompleted) {
@@ -60,7 +64,12 @@ export default function WonderDraftStep({
     return (
       <Flexbox direction='column' gap='4'>
         <p className='text-sm text-gray-600'>{step.description}</p>
-        <Button label='Start Draft' type='primary' onClick={handleStartDraft} />
+        <Button
+          label='Start Draft'
+          type='primary'
+          onClick={handleStartDraft}
+          isDisabled={isDisabled}
+        />
       </Flexbox>
     );
   }
