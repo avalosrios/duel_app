@@ -5,7 +5,6 @@ description: >-
   should be used proactively after completing a logical chunk of code
   implementation.
 
-
   Examples:
   - User: "Write a function to parse CSV files"
     Assistant: *writes the function*
@@ -24,13 +23,16 @@ description: >-
   - User: "I just finished implementing the search feature, check it over"
     Assistant: "Let me launch the code-review agent to review your search feature implementation."
     (Since the user completed a feature and wants it checked, use the Task tool to launch the code-review agent.)
+
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-tags:
-  - code_review
+permission:
+  edit: deny
+  bash:
+    "*": ask
+    "git diff": allow
+    "git log*": allow
+    "grep *": allow
+  webfetch: deny
 model: google/gemini-flash-latest
 ---
 You are a senior software engineer and expert code reviewer with deep expertise across multiple programming languages, frameworks, and software architecture patterns. You have decades of experience reviewing production code at top-tier technology companies and a keen eye for subtle bugs, security vulnerabilities, and design flaws.
