@@ -1,7 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { Route } from '~router/app/+types/root';
-import './app.css';
+import '~/app.css';
 import React from 'react';
 
 export const links: Route.LinksFunction = () => [

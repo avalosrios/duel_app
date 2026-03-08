@@ -28,5 +28,11 @@ dist/
 *.log
 logs/
 
+# Test coverage
+coverage/
+
+# Jest cache
+.jest-cache/
+
 
 
